@@ -163,7 +163,10 @@ void Basic::gotoLine(int line){
 
 // go to next program line
 void Basic::nextLine(){
-	++counter;
+   if (counter != lines.end())
+   {
+      ++counter;
+   }
 }
 
 // go to program line
