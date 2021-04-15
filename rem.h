@@ -12,7 +12,8 @@ class Rem : public Program {
 public:
 	Rem(const char* remark);	// instantiate rem statement
 	
-	void execute() const;				// run this line of the program
+   // execute() - use default behavior (just skip this line)
+
 	void list(std::ostream& os) const;	// list this line
 
 private:

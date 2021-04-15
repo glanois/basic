@@ -7,7 +7,7 @@ Goto::Goto(int line){
 }
 
 // run this line of the program
-void Goto::execute() const{
+void Goto::execute(bool /* next*/) const{
 	Basic::instance()->gotoLine(line);
 }
 

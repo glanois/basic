@@ -18,17 +18,18 @@ all:	basic.tab.c lex.yy.c \
 		data.h data.cpp \
 		for.h for.cpp \
 		next.h next.cpp \
-		rem.h rem.cpp
+		rem.h rem.cpp \
+		multiprogram.h multiprogram.cpp
 
 	g++ -std=c++11 basic.tab.c lex.yy.c program.cpp basic.cpp print.cpp expression.cpp \
 	stringexpression.cpp doubleexpression.cpp operatorexpression.cpp let.cpp \
 	variableexpression.cpp parenexpression.cpp goto.cpp end.cpp ifthen.cpp  read.cpp \
-	data.cpp for.cpp next.cpp rem.cpp \
+	data.cpp for.cpp next.cpp rem.cpp multiprogram.cpp \
 	-o basic
 
 basic.tab.c: basic.y basic.h expression.h stringexpression.h doubleexpression.h \
 		operatorexpression.h print.h program.h let.h variableexpression.h parenexpression.h \
-		goto.h end.h ifthen.h read.h data.h for.h next.h rem.h
+		goto.h end.h ifthen.h read.h data.h for.h next.h rem.h multiprogram.h
 	bison -d basic.y
 
 basic.tab.h: basic.y

@@ -1,9 +1,11 @@
 #include "program.h"
 #include "basic.h"
 
-// advance to next line
-void Program::execute() const{
-	Basic::instance()->nextLine();
+void Program::execute(bool next) const{
+   if (next)
+   {
+      Basic::instance()->nextLine();
+   }
 }
 
 // if you ever see this, something is wrong

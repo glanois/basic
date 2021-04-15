@@ -25,19 +25,30 @@ const std::string OperatorExpression::list() const{
 		return "-" + a->list();
 }
 
-double OperatorExpression::value() const{
+double OperatorExpression::value() const
+{
+   double result = 0.0;
 	switch( op ){
 		case '+':
-			return a->value() + b->value();
+			result = a->value() + b->value();
+         break;
 		case '-':
-			return a->value() - b->value();
+			result = a->value() - b->value();
+         break;
 		case '*':
-			return a->value() * b->value();
+			result = a->value() * b->value();
+         break;
 		case '/':
-			return a->value() / b->value();
+         result = a->value() / b->value();
+         break; 
 		case '^':
-			return exp(log(a->value()) * b->value());
+			result = exp(log(a->value()) * b->value());
+         break;
 		case 'n':
-			return -a->value();
+			result = -a->value();
+         break;
+   default:
+      printf("ERROR: operation '%c' not supported.\n", op);
 	}
+   return result;
 }

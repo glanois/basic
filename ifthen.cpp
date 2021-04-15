@@ -18,7 +18,7 @@ IfThen::~IfThen(){
 }
 
 // run this line of the program
-void IfThen::execute() const{
+void IfThen::execute(bool next) const{
 	double aVal = a->value();
 	double bVal = b->value();
 	bool result = false;
@@ -39,7 +39,12 @@ void IfThen::execute() const{
 	if( result )
 		Basic::instance()->gotoLine(line);
 	else
-		Program::execute();
+   {
+      if (next)
+      {
+         Basic::instance()->nextLine();
+      }
+   }
 }
 
 // list this line

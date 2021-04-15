@@ -23,6 +23,7 @@ void yyerror(const char *s);
 #include "print.h"
 #include "rem.h"
 #include "program.h"
+#include "multiprogram.h"
 #include "let.h"
 #include "goto.h"
 #include "end.h"
@@ -38,13 +39,14 @@ void yyerror(const char *s);
 %union {
 	int iVal;
 	double dVal;
-	char *sVal;
+   char* sVal;
 	Program *progVal;
 	Expression *eVal;
 	DoubleExpression *dxVal;
 	std::vector<Expression*> *eList;
 	std::vector<std::string> *sList;
 	std::vector<double> *dList;
+   std::vector<Program*>* stmtList;
 }
 
 // constant tokens
@@ -53,6 +55,7 @@ void yyerror(const char *s);
 %token ENDL
 %token LIST
 %token COMMA
+%token COLON
 %token PLUS
 %token MINUS
 %token MULT
@@ -103,6 +106,7 @@ void yyerror(const char *s);
 %type <dxVal> term
 %type <sVal> comp
 %type <sList> stringList
+%type <stmtList> statementList
 %type <dList> doubleList
 
 %% /* Grammar rules and actions follow */
@@ -119,6 +123,13 @@ line:
 
 stmt:
 	INT					{ Basic::instance()->remove($1); }
+	| INT statementList { MultiProgram* mp = new MultiProgram();
+                        std::vector<Program*>::iterator i;
+                        for (i = $2->begin(); i != $2->end(); ++i)
+                        {
+                           mp->add((*i));
+                        }
+								Basic::instance()->add($1, mp); }
 	| INT program		{ Basic::instance()->add($1, $2); }
 	| RUN				{ Basic::instance()->execute(); }
 	| LIST				{ Basic::instance()->list(std::cout); }
@@ -168,6 +179,13 @@ stringList:
 								$1->push_back($3);
 								$$ = $1;
 							}
+;
+
+statementList:
+	program								{ $$ = new std::vector<Program*>(1, $1); }
+	| statementList COLON program	{ $1->push_back($3);
+											$$ = $1;
+										}
 ;
 
 doubleList:

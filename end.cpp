@@ -2,7 +2,7 @@
 #include "basic.h"
 
 // run this line of the program
-void End::execute() const{
+void End::execute(bool /* next */) const{
 	Basic::instance()->endProgram();
 }
 
