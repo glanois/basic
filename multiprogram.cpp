@@ -5,17 +5,27 @@ MultiProgram::MultiProgram() : Program()
 {
 }
 
-void MultiProgram::execute(bool /* next */) const
+bool MultiProgram::execute(bool /* next */) const
 {
 	std::vector<Program*>::const_iterator it;
-	for(it = programs_.cbegin(); it != programs_.cend(); ++it )
+
+   // We are done if a statement tells us so (eg, "STOP" or "END").
+   bool terminate = false;
+   int s = 0;
+	for (it = programs_.cbegin(); it != programs_.cend() && !terminate; ++it)
    {
-		(*it)->execute(false /* Don't execute next line - keep executing the statements in this line. */);
+		terminate = !(*it)->execute(false /* Don't execute next line - keep executing the statements in this line. */);
 	}
 	
    // Now that all the colon-separated statements on this line have
-   // been executed, continue to the next line.
-   Basic::instance()->nextLine();
+   // been executed, continue to the next line (unless the program
+   // was ended by a STOP or END).
+   if (!terminate)
+   {
+      Basic::instance()->nextLine();
+   }
+
+   return !terminate;
 }
 
 void MultiProgram::list(std::ostream& os) const

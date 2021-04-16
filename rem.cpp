@@ -8,6 +8,15 @@ using std::cout;
 Rem::Rem(const char* remark) : remark_(remark) {
 }
 
+bool Rem::execute(bool /* next */) const
+{
+   // Always go to the next line.  Even if it is a multi-statement
+   // line like:
+   //   100 PRINT "SOMETHING" : REM THIS IS A COMMENT : PRINT "SOMETHING ELSE"
+   Basic::instance()->nextLine();
+   return true;
+}
+
 // list this line
 void Rem::list(std::ostream& os) const{
 	os << remark_;

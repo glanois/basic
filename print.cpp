@@ -12,7 +12,7 @@ Print::Print(const std::vector<Expression*> *exprList){
 }
 
 // prints out each expression to std::cout
-void Print::execute(bool next) const{
+bool Print::execute(bool next) const{
 	for( int i = 0; i < exprList->size()-1; i++ ){
 		cout << exprList->at(i)->print() << ' ';
 	}
@@ -21,6 +21,7 @@ void Print::execute(bool next) const{
    {
       Basic::instance()->nextLine();
    }
+   return true;
 }
 
 // lists the expressions, as they were originally given

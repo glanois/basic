@@ -24,7 +24,7 @@ For::~For(){
 }
 
 // run this line of the program
-void For::execute(bool next) const{
+bool For::execute(bool next) const{
 	double s = 1.0;						// default step size
 	double val;
 	
@@ -50,6 +50,7 @@ void For::execute(bool next) const{
    {
       Basic::instance()->nextLine();	// continue to next line
    }
+   return true;
 }
 
 // list this line
