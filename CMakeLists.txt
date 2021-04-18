@@ -56,6 +56,7 @@ for.cpp
 goto.cpp
 ifthen.cpp
 let.cpp
+multiprogram.cpp
 next.cpp
 operatorexpression.cpp
 parenexpression.cpp
