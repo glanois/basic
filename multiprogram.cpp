@@ -39,6 +39,16 @@ void MultiProgram::list(std::ostream& os) const
 	}
 }
 
+void MultiProgram::preExecute() const
+{
+   // Run the preExecute() of all the sub-statements.
+	std::vector<Program*>::const_iterator it;
+	for (it = programs_.cbegin(); it != programs_.cend(); ++it)
+   {
+		(*it)->preExecute();
+	}
+}
+
 void MultiProgram::add(Program* program)
 {
    programs_.push_back(program);
