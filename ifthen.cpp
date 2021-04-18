@@ -45,7 +45,12 @@ bool IfThen::execute(bool next) const{
          Basic::instance()->nextLine();
       }
    }
-   return true;
+
+   // When result == true, then the rest of the multi-statement
+   // needs to be skipped (and control passes to the line number
+   // specified by the THEN).  When result == false, execute the next
+   // sub-statement in the multi-statement.
+   return !result;
 }
 
 // list this line

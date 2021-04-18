@@ -53,8 +53,8 @@ void Basic::execute(){
    int c = 0;
 	while( counter != lines.end() )
    {
-      // Don't have to check the return value here - 
-      // statements that terminate the program (STOP, END)
+      // Don't have to check the return value here:
+      // Statements that terminate the program (STOP, END)
       // do so by callind endProgram(), which sets counter 
       // to lines.end() directly.
 		counter->second->execute(true);

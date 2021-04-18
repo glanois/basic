@@ -10,7 +10,7 @@ Goto::Goto(int line){
 bool Goto::execute(bool /* next*/) const{
    // Don't go to the next line, go to the specified line.
 	Basic::instance()->gotoLine(line);
-   return true;
+   return false;
 }
 
 // list this line
