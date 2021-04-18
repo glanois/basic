@@ -222,8 +222,10 @@ doubleExpr:
 
 addExpr:
 	mulExpr
-	| mulExpr PLUS mulExpr	{ $$ = new OperatorExpression($1, $3, '+'); }
-	| mulExpr MINUS mulExpr	{ $$ = new OperatorExpression($1, $3, '-'); }
+	| doubleExpr PLUS mulExpr 	{ $$ = new OperatorExpression($1, $3, '+'); }
+	| doubleExpr MINUS mulExpr	{ $$ = new OperatorExpression($1, $3, '-'); }
+	| mulExpr PLUS doubleExpr 	{ $$ = new OperatorExpression($1, $3, '+'); }
+	| mulExpr MINUS doubleExpr { $$ = new OperatorExpression($1, $3, '-'); }
 ;
 
 mulExpr:

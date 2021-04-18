@@ -12,7 +12,7 @@ bool Rem::execute(bool /* next */) const
 {
    // Always go to the next line.  Even if it is a multi-statement
    // line like:
-   //   100 PRINT "SOMETHING" : REM THIS IS A COMMENT : PRINT "SOMETHING ELSE"
+   //   100 PRINT "SOMETHING" : REM THIS IS A COMMENT : PRINT "THIS WON'T PRINT"
    Basic::instance()->nextLine();
    return true;
 }
