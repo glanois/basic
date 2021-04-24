@@ -15,7 +15,7 @@ class Print : public Program {
 public:
 	Print(const std::vector<Expression*> *exprList);	// create with a vector of expressions to print
 
-	virtual void execute() const;						// print the expression
+	virtual bool execute(bool next) const;						// print the expression
 	virtual void list(ostream& os) const;				// list this statement
 	
 private:

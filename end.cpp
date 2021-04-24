@@ -2,8 +2,10 @@
 #include "basic.h"
 
 // run this line of the program
-void End::execute() const{
+bool End::execute(bool /* next */) const{
+   // Don't advance the counter; set it to lines.end().
 	Basic::instance()->endProgram();
+   return false;
 }
 
 // list this line

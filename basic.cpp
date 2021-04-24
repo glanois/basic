@@ -50,8 +50,15 @@ void Basic::execute(){
 	}
 	
 	counter = lines.begin();
+   int c = 0;
 	while( counter != lines.end() )
-		counter->second->execute();
+   {
+      // Don't have to check the return value here:
+      // Statements that terminate the program (STOP, END)
+      // do so by callind endProgram(), which sets counter 
+      // to lines.end() directly.
+		counter->second->execute(true);
+   }
 }
 
 // access the singleton instance, creating it if necessary
@@ -74,10 +81,17 @@ void Basic::assign(string var, double value){
 
 // return variable value
 double Basic::resolve(string var){
+   double result = 0.0;
 	map<string, double>::iterator it = vars.find(var);
-	if( it != vars.end() ){
-		return it->second;
+	if( it == vars.end() )
+   {
+      printf("ERROR: variable %s not found.\n", var.c_str());
+   }
+   else
+   {
+		result = it->second;
 	}
+   return result;
 }
 
 // save active program to disk
@@ -154,7 +168,10 @@ void Basic::gotoLine(int line){
 
 // go to next program line
 void Basic::nextLine(){
-	++counter;
+   if (counter != lines.end())
+   {
+      ++counter;
+   }
 }
 
 // go to program line

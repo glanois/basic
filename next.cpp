@@ -15,9 +15,10 @@ Next::~Next(){
 }
 
 // run this line of the program
-void Next::execute() const{
+bool Next::execute(bool /* next */) const{
 	loop.at(this)->doNext();
 	Basic::instance()->gotoProgram(loop[this]);
+   return true;
 }
 
 // list this line

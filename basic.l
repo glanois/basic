@@ -23,9 +23,7 @@ DIGIT    [0-9]
 [ \t]+	;		// skip white space
 {DIGIT}+		{ yylval.iVal = atoi(yytext); return INT; }
 \"[^\"\n]*\"	{	// remove the quote marks from either end
-					yylval.sVal = (char *)malloc(sizeof(char)*strlen(yytext)-1);
-					strncpy(yylval.sVal, yytext+1, strlen(yytext)-2);
-					yylval.sVal[strlen(yytext)-2] = '\0';	// terminate the string!
+					yylval.sVal = strndup(yytext+1, strlen(yytext)-2);
 					return STRING;
 				}
 (({DIGIT}+"."?)|("."{DIGIT}+)){DIGIT}*(E-?{DIGIT}+)?	{ yylval.dVal = atof(yytext); return DOUBLE; }
@@ -34,6 +32,7 @@ REM.*			{ yylval.sVal = strndup(yytext, 512); return REMARK; }
 RUN				{ return RUN; }
 LIST			{ return LIST; }
 ,				{ return COMMA; }
+:				{ return COLON; }
 \n				{
 					if( yyin == stdin )
 						std::cout << ">";

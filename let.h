@@ -15,7 +15,7 @@ public:
 	Let(char *var, const DoubleExpression *expression);	// create a new LET assignment
 	~Let();												// clean up
 
-	void execute() const;				// run this line of the program
+	bool execute(bool next) const;				// run this line of the program
 	void list(std::ostream& os) const;	// list this line
 	
 private:

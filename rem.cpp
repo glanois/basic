@@ -8,10 +8,13 @@ using std::cout;
 Rem::Rem(const char* remark) : remark_(remark) {
 }
 
-// run this line of the program
-void Rem::execute() const{
-   // Do nothing - it is just a comment.
-   Program::execute();
+bool Rem::execute(bool /* next */) const
+{
+   // Always go to the next line.  Even if it is a multi-statement
+   // line like:
+   //   100 PRINT "SOMETHING" : REM THIS IS A COMMENT : PRINT "THIS WON'T PRINT"
+   Basic::instance()->nextLine();
+   return true;
 }
 
 // list this line

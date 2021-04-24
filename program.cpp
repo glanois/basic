@@ -1,9 +1,8 @@
 #include "program.h"
 #include "basic.h"
 
-// advance to next line
-void Program::execute() const{
-	Basic::instance()->nextLine();
+Program::~Program()
+{
 }
 
 // if you ever see this, something is wrong
