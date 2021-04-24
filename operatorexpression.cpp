@@ -42,7 +42,7 @@ double OperatorExpression::value() const
          result = a->value() / b->value();
          break; 
 		case '^':
-			result = exp(log(a->value()) * b->value());
+			result = pow(a->value(), b->value());
          break;
 		case 'n':
 			result = -a->value();
