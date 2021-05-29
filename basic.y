@@ -17,6 +17,8 @@ void yyerror(const char *s);
 #include "expression.h"
 #include "stringexpression.h"
 #include "doubleexpression.h"
+#include "integerexpression.h"
+#include "stringexpression.h"
 #include "operatorexpression.h"
 #include "variableexpression.h"
 #include "parenexpression.h"
@@ -42,7 +44,9 @@ void yyerror(const char *s);
    char* sVal;
 	Program *progVal;
 	Expression *eVal;
-	DoubleExpression *dxVal;
+   DoubleExpression *dxVal;
+	IntegerExpression *ixVal;
+	StringExpression *sxVal;
 	std::vector<Expression*> *eList;
 	std::vector<std::string> *sList;
 	std::vector<double> *dList;
@@ -92,7 +96,9 @@ void yyerror(const char *s);
 %token <iVal> INT
 %token <sVal> STRING
 %token <dVal> DOUBLE
-%token <sVal> VAR
+%token <sVal> FVAR
+%token <sVal> IVAR
+%token <sVal> SVAR
 %token <sVal> REMARK
 
 // non-terminal symbols
@@ -100,10 +106,18 @@ void yyerror(const char *s);
 %type <eList> exprList
 %type <eVal> expr
 %type <dxVal> doubleExpr
-%type <dxVal> addExpr
-%type <dxVal> mulExpr
-%type <dxVal> expExpr
-%type <dxVal> term
+%type <dxVal> addDoubleExpr
+%type <dxVal> mulDoubleExpr
+%type <dxVal> expDoubleExpr
+%type <dxVal> doubleTerm
+%type <ixVal> integerExpr
+%type <ixVal> addIntegerExpr
+%type <ixVal> mulIntegerExpr
+%type <ixVal> expIntegerExpr
+%type <ixVal> integerTerm
+%type <sxVal> stringExpr
+%type <sxVal> addStringExpr
+%type <sxVal> stringTerm
 %type <sVal> comp
 %type <sList> stringList
 %type <stmtList> statementList
@@ -143,29 +157,48 @@ stmt:
 ;
 
 program:
-	PRINT exprList			{ $$ = new Print($2); }
+	PRINT exprList			{ 
+      $$ = new Print($2); 
+   }
 	| REMARK 				{ $$ = new Rem($1); }
-	| LET VAR EQUAL doubleExpr	{
-								$$ = new Let($2, $4);
+	| LET FVAR EQUAL doubleExpr	{
+								$$ = new DoubleLet($2, $4);
 								free($2);	// malloced in basic.l
 							}
+	| LET IVAR EQUAL integerExpr	{
+								$$ = new IntegerLet($2, $4);
+								free($2);	// malloced in basic.l
+							}
+   | LET SVAR EQUAL stringExpr	{
+								$$ = new StringLet($2, $4);
+								free($2);	// malloced in basic.l
+                        }
 	| GOTO INT				{ $$ = new Goto($2); }
 	| END					{ $$ = new End(); }
-	| IF doubleExpr comp doubleExpr THEN INT
-							{ $$ = new IfThen($2, $4, $3, $6); }
+	| IF doubleExpr  comp doubleExpr  THEN INT { $$ = new DoubleIfThen($2, $4, $3, $6); }
+   | IF integerExpr comp integerExpr THEN INT { $$ = new IntegerIfThen($2, $4, $3, $6); }
+   /* xxx | IF stringExpr comp stringExpr THEN INT
+   { $$ = new StringIfThen($2, $4, $3, $6); } */
 	| READ stringList		{ $$ = new Read(*$2); }
 	| DATA doubleList		{ $$ = new Data(*$2); }
-	| FOR VAR EQUAL doubleExpr TO doubleExpr {
-								$$ = new For($4, $6, NULL, $2);
+	| FOR FVAR EQUAL doubleExpr TO doubleExpr {
+								$$ = new DoubleFor($4, $6, NULL, $2);
 							}
-	| FOR VAR EQUAL doubleExpr TO doubleExpr STEP doubleExpr {
-								$$ = new For($4, $6, $8, $2);
+	| FOR FVAR EQUAL doubleExpr TO doubleExpr STEP doubleExpr {
+								$$ = new DoubleFor($4, $6, $8, $2);
 							}
-	| NEXT VAR				{ $$ = new Next($2); }
+	| NEXT FVAR				{ $$ = new DoubleNext($2); }
+	| FOR IVAR EQUAL integerExpr TO integerExpr {
+								$$ = new IntegerFor($4, $6, NULL, $2);
+							}
+	| FOR IVAR EQUAL integerExpr TO integerExpr STEP integerExpr {
+								$$ = new IntegerFor($4, $6, $8, $2);
+							}
+	| NEXT IVAR				{ $$ = new IntegerNext($2); }
 ;
 
 comp:
-	EQUAL					{ $$ = "="; }
+   EQUAL					{ $$ = "="; }
 	| LESS					{ $$ = "<"; }
 	| GREATER				{ $$ = ">"; }
 	| LESSEQUAL				{ $$ = "<="; }
@@ -174,8 +207,16 @@ comp:
 ;
 
 stringList:
-	VAR						{ $$ = new std::vector<std::string>(1, $1); }
-	| stringList COMMA VAR	{
+	SVAR						{ $$ = new std::vector<std::string>(1, $1); }
+	| stringList COMMA FVAR	{
+								$1->push_back($3);
+								$$ = $1;
+							}
+	| stringList COMMA IVAR	{
+								$1->push_back($3);
+								$$ = $1;
+							}
+	| stringList COMMA SVAR	{
 								$1->push_back($3);
 								$$ = $1;
 							}
@@ -202,7 +243,8 @@ doubleList:
 ;
 
 exprList:
-	expr					{ $$ = new std::vector<Expression*>(1, $1); }
+	expr					{ 
+      $$ = new std::vector<Expression*>(1, $1); }
 	| exprList COMMA expr	{
 								$1->push_back($3);
 								$$ = $1;
@@ -210,44 +252,100 @@ exprList:
 ;
 
 expr:
-	STRING			{
-						$$ = new StringExpression($1);
-						free($1);	// malloced in basic.l
-					}
-	| doubleExpr
+   doubleExpr
+   | integerExpr
+   | stringExpr
 	
 doubleExpr:
-	addExpr
+	addDoubleExpr
 ;
 
-addExpr:
-	mulExpr
-	| doubleExpr PLUS mulExpr 	{ $$ = new OperatorExpression($1, $3, '+'); }
-	| doubleExpr MINUS mulExpr	{ $$ = new OperatorExpression($1, $3, '-'); }
-	| mulExpr PLUS doubleExpr 	{ $$ = new OperatorExpression($1, $3, '+'); }
-	| mulExpr MINUS doubleExpr { $$ = new OperatorExpression($1, $3, '-'); }
+addDoubleExpr:
+	mulDoubleExpr
+	| doubleExpr PLUS mulDoubleExpr 	{ $$ = new DoubleOperatorExpression(*($1), *($3), '+'); }
+   | doubleExpr MINUS mulDoubleExpr	{ $$ = new DoubleOperatorExpression(*($1), *($3), '-'); }
+   | mulDoubleExpr PLUS doubleExpr 	{ $$ = new DoubleOperatorExpression(*($1), *($3), '+'); }
+   | mulDoubleExpr MINUS doubleExpr { $$ = new DoubleOperatorExpression(*($1), *($3), '-'); }
 ;
 
-mulExpr:
-	expExpr
-	| expExpr MULT expExpr	{ $$ = new OperatorExpression($1, $3, '*'); }
-	| expExpr DIV expExpr	{ $$ = new OperatorExpression($1, $3, '/'); }
-	| MINUS expExpr			{ $$ = new OperatorExpression($2, NULL, 'n'); }
+mulDoubleExpr:
+	expDoubleExpr
+	| expDoubleExpr MULT expDoubleExpr	{ $$ = new DoubleOperatorExpression(*($1), *($3), '*'); }
+   | expDoubleExpr DIV expDoubleExpr	{ $$ = new DoubleOperatorExpression(*($1), *($3), '/'); }
+   | MINUS expDoubleExpr			{ $$ = new DoubleOperatorExpression(*($2), 'n'); }
 ;
 
-expExpr:
-	term
-	| term EXP term			{ $$ = new OperatorExpression($1, $3, '^'); }
+expDoubleExpr:
+	doubleTerm
+	| doubleTerm EXP doubleTerm			{ $$ = new DoubleOperatorExpression(*($1), *($3), '^'); }
 ;
 
-term:
-	DOUBLE			{ $$ = new DoubleExpression($1); }
-	| INT			{ $$ = new DoubleExpression($1); }
-	| VAR			{
-						$$ = new VariableExpression($1);
-						free($1);
-					}
-	| OPENPAREN addExpr CLOSEPAREN	{ $$ = new ParenExpression($2); }
+doubleTerm:
+	DOUBLE			{ 
+      $$ = new DoubleExpression($1); }
+	| FVAR			{
+      $$ = new DoubleVariableExpression(std::string($1));
+      free($1); }
+	| OPENPAREN addDoubleExpr CLOSEPAREN	{ 
+      $$ = new DoubleParenExpression(*($2)); }
+;
+
+integerExpr:
+	addIntegerExpr
+;
+
+addIntegerExpr:
+	mulIntegerExpr
+	| integerExpr PLUS mulIntegerExpr 	{ $$ = new IntegerOperatorExpression(*($1), *($3), '+'); }
+	| integerExpr MINUS mulIntegerExpr	{ $$ = new IntegerOperatorExpression(*($1), *($3), '-'); }
+	| mulIntegerExpr PLUS integerExpr 	{ $$ = new IntegerOperatorExpression(*($1), *($3), '+'); }
+	| mulIntegerExpr MINUS integerExpr { $$ = new IntegerOperatorExpression(*($1), '-'); }
+;
+
+mulIntegerExpr:
+	expIntegerExpr
+	| expIntegerExpr MULT expIntegerExpr	{ $$ = new IntegerOperatorExpression(*($1), *($3), '*'); }
+   | expIntegerExpr DIV expIntegerExpr	{ $$ = new IntegerOperatorExpression(*($1), *($3), '/'); }
+   | MINUS expIntegerExpr			{ $$ = new IntegerOperatorExpression(*($2), 'n'); }
+;
+
+expIntegerExpr:
+	integerTerm
+	| integerTerm EXP integerTerm			{ $$ = new IntegerOperatorExpression(*($1), *($3), '^'); }
+;
+
+integerTerm:
+	INT { 
+      $$ = new IntegerExpression($1); }
+	| IVAR {
+      $$ = new IntegerVariableExpression(std::string($1));
+      free($1); }
+   | OPENPAREN addIntegerExpr CLOSEPAREN	{ $$ = new IntegerParenExpression(*($2)); }
+;
+
+stringExpr:
+   stringTerm
+   | addStringExpr
+;
+
+addStringExpr:
+   stringTerm PLUS stringTerm { 
+      /* xxx $$ = new StringOperatorExpression($1, $3, '+'); */ 
+   }
+;
+
+stringTerm:
+	STRING { 
+      $$ = new StringExpression(std::string($1)); 
+      free($1);	// malloced in basic.l
+   }
+   | SVAR { 
+      /* xxx  $$ = new StringVariableExpression($1); free($1); */ 
+   }
+   | OPENPAREN addStringExpr CLOSEPAREN
+   { 
+      /* xxx $$ = new StringParenExpression($2); */ 
+   }
 ;
 
 %%

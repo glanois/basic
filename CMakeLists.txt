@@ -55,6 +55,7 @@ expression.cpp
 for.cpp
 goto.cpp
 ifthen.cpp
+integerexpression.cpp
 let.cpp
 multiprogram.cpp
 next.cpp

@@ -5,7 +5,7 @@ Data::Data(std::vector<double> vals){
 	this->vals = vals;
 }
 
-bool Data::execute(bool next) const
+bool Data::execute(int /* lineNumber */, bool next) const
 {
    // Just skip over DATA statement when executing.
    if (next)

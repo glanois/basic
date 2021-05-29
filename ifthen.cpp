@@ -4,7 +4,7 @@
 #include "basic.h"
 
 // create a new statement instance
-IfThen::IfThen(DoubleExpression *a, DoubleExpression *b, char *op, int line){
+DoubleIfThen::DoubleIfThen(DoubleExpression *a, DoubleExpression *b, char *op, int line){
 	this->a = a;
 	this->b = b;
 	this->op = op;
@@ -12,13 +12,13 @@ IfThen::IfThen(DoubleExpression *a, DoubleExpression *b, char *op, int line){
 }
 
 // clean up the expression pointers
-IfThen::~IfThen(){
+DoubleIfThen::~DoubleIfThen(){
 	delete a;
 	delete b;
 }
 
 // run this line of the program
-bool IfThen::execute(bool next) const{
+bool DoubleIfThen::execute(int /* lineNumber */, bool next) const{
 	double aVal = a->value();
 	double bVal = b->value();
 	bool result = false;
@@ -54,7 +54,64 @@ bool IfThen::execute(bool next) const{
 }
 
 // list this line
-void IfThen::list(std::ostream& os) const{
+void DoubleIfThen::list(std::ostream& os) const{
+	os << "IF " << a->list() << ' ' << op << ' ';
+	os << b->list() << " THEN " << line;
+}
+
+
+// create a new statement instance
+IntegerIfThen::IntegerIfThen(IntegerExpression *a, IntegerExpression *b, char *op, int line){
+	this->a = a;
+	this->b = b;
+	this->op = op;
+	this->line = line;
+}
+
+// clean up the expression pointers
+IntegerIfThen::~IntegerIfThen(){
+	delete a;
+	delete b;
+}
+
+// run this line of the program
+bool IntegerIfThen::execute(int /* lineNumber */, bool next) const{
+	long aVal = a->value();
+	long bVal = b->value();
+	bool result = false;
+	
+	if( strcmp(op, "=") == 0 )
+		result = aVal == bVal;
+	else if( strcmp(op, "<") == 0 )
+		result = aVal < bVal;
+	else if( strcmp(op, ">") == 0 )
+		result = aVal > bVal;
+	else if( strcmp(op, "<=") == 0 )
+		result = aVal <= bVal;
+	else if( strcmp(op, ">=") == 0 )
+		result = aVal >= bVal;
+	else if( strcmp(op, "<>") == 0 )
+		result = aVal != bVal;
+	
+	if( result )
+		Basic::instance()->gotoLine(line);
+	else
+   {
+      if (next)
+      {
+         Basic::instance()->nextLine();
+      }
+   }
+
+   // When result == true, then the rest of the multi-statement
+   // needs to be skipped (and control passes to the line number
+   // specified by the THEN).  When result == false, execute the next
+   // sub-statement in the multi-statement.
+   return !result;
+}
+
+// list this line
+void IntegerIfThen::list(std::ostream& os) const{
 	os << "IF " << a->list() << ' ' << op << ' ';
 	os << b->list() << " THEN " << line;
 }

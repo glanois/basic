@@ -12,7 +12,7 @@ class Rem : public Program {
 public:
 	Rem(const char* remark);	// instantiate rem statement
 	
-   virtual bool execute(bool next) const;
+   virtual bool execute(int lineNumber, bool next) const;
 
 	void list(std::ostream& os) const;	// list this line
 

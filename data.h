@@ -13,7 +13,7 @@ class Data : public Program {
 public:
 	Data(std::vector<double> vals);
 	
-   virtual bool execute(bool next) const;
+   virtual bool execute(int lineNumber, bool next) const;
 	void list(std::ostream& os) const;	// list this line
 	void preExecute() const;			// run before main program execution
 	

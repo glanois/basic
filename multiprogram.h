@@ -13,7 +13,7 @@ class MultiProgram : public Program
 {
 public:
    MultiProgram();
-	virtual bool execute(bool next) const;				// run this line of the program
+	virtual bool execute(int lineNumber, bool next) const;				// run this line of the program
 	virtual void list(std::ostream& os) const;	// list this line
 	virtual void preExecute() const;			// run before main program execution
 

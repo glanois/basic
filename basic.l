@@ -10,6 +10,8 @@
 class Program;
 class Expression;
 class DoubleExpression;
+class IntegerExpression;
+class StringExpression;
 
 #include "basic.tab.hpp"
 
@@ -38,7 +40,9 @@ LIST			{ return LIST; }
 						std::cout << ">";
 					return ENDL;
 				}
-{ALPHA}{DIGIT}?	{ yylval.sVal = strdup(yytext); return VAR; }
+{ALPHA}{DIGIT}?	{ yylval.sVal = strdup(yytext); return FVAR; }
+{ALPHA}{DIGIT}?\%	{ yylval.sVal = strdup(yytext); return IVAR; }
+{ALPHA}{DIGIT}?\$	{ yylval.sVal = strdup(yytext); return SVAR; }
 \+				{ return PLUS; }
 -				{ return MINUS; }
 \*				{ return MULT; }

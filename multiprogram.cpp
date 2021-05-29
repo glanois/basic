@@ -5,7 +5,7 @@ MultiProgram::MultiProgram() : Program()
 {
 }
 
-bool MultiProgram::execute(bool /* next */) const
+bool MultiProgram::execute(int lineNumber, bool /* next */) const
 {
 	std::vector<Program*>::const_iterator it;
 
@@ -14,7 +14,7 @@ bool MultiProgram::execute(bool /* next */) const
    int s = 0;
 	for (it = programs_.cbegin(); it != programs_.cend() && !terminate; ++it)
    {
-		terminate = !(*it)->execute(false /* Don't execute next line - keep executing the statements in this line. */);
+		terminate = !(*it)->execute(lineNumber, false /* Don't execute next line - keep executing the statements in this line. */);
 	}
 	
    // Now that all the colon-separated statements on this line have

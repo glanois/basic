@@ -6,7 +6,7 @@ Read::Read(std::vector<std::string> vars){
 }
 
 // run this line of the program
-bool Read::execute(bool next) const{
+bool Read::execute(int /* lineNumber */, bool next) const{
 	for( std::vector<std::string>::const_iterator it = vars.cbegin(); it != vars.cend(); ++it ){
 		Basic::instance()->read(*it);
 	}

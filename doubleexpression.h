@@ -15,7 +15,7 @@ public:
 	virtual double value() const;				// numerical evaluation
 	
 private:
-	double d;								// data storage
+	double d_;								// data storage
 };
 
 #endif

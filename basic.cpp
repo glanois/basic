@@ -50,14 +50,13 @@ void Basic::execute(){
 	}
 	
 	counter = lines.begin();
-   int c = 0;
 	while( counter != lines.end() )
    {
       // Don't have to check the return value here:
       // Statements that terminate the program (STOP, END)
       // do so by callind endProgram(), which sets counter 
       // to lines.end() directly.
-		counter->second->execute(true);
+		counter->second->execute(counter->first, true);
    }
 }
 
@@ -69,21 +68,55 @@ Basic *Basic::instance(){
 }
 
 // assign a value to a variable
-void Basic::assign(string var, double value){
-	// delete value if var already exists
-	map<string, double>::iterator it = vars.find(var);
-	if( it != vars.end() ){
-		vars.erase(it);
-	}
-	
-	vars.insert(pair<string, double>(var, value));
+void Basic::assign(const std::string& var, double value){
+   doubleVars[var] = value;
+}
+
+// assign a value to a variable
+void Basic::assign(const std::string& var, long value){
+   integerVars[var] = value;
+}
+
+// assign a value to a variable
+void Basic::assign(const std::string& var, const std::string& value){
+   stringVars[var] = value;
 }
 
 // return variable value
-double Basic::resolve(string var){
+double Basic::resolveDouble(const std::string& var){
    double result = 0.0;
-	map<string, double>::iterator it = vars.find(var);
-	if( it == vars.end() )
+	map<string, double>::iterator it = doubleVars.find(var);
+	if( it == doubleVars.end() )
+   {
+      printf("ERROR: variable %s not found.\n", var.c_str());
+   }
+   else
+   {
+		result = it->second;
+	}
+   return result;
+}
+
+// return variable value
+long Basic::resolveInteger(const std::string& var){
+   long result = 0;
+	map<string, long>::iterator it = integerVars.find(var);
+	if( it == integerVars.end() )
+   {
+      printf("ERROR: variable %s not found.\n", var.c_str());
+   }
+   else
+   {
+		result = it->second;
+	}
+   return result;
+}
+
+// return variable value
+std::string Basic::resolveString(const std::string& var){
+   std::string result;
+	map<string, std::string>::iterator it = stringVars.find(var);
+	if( it == stringVars.end() )
    {
       printf("ERROR: variable %s not found.\n", var.c_str());
    }
@@ -201,13 +234,25 @@ void Basic::pushData(std::vector<double> vals){
 }
 
 // push a FOR loop onto the stack
-void Basic::pushFor(const For *forLoop){
-	forLoops.push(forLoop);
+void Basic::pushDoubleFor(const DoubleFor *forLoop){
+	doubleForLoops.push(forLoop);
 }
 
 // pop last FOR off the stack
-const For* Basic::popFor(){
-	const For *loop = forLoops.top();
-	forLoops.pop();
+const DoubleFor* Basic::popDoubleFor(){
+	const DoubleFor *loop = doubleForLoops.top();
+	doubleForLoops.pop();
+	return loop;
+}
+
+// push a FOR loop onto the stack
+void Basic::pushIntegerFor(const IntegerFor *forLoop){
+	integerForLoops.push(forLoop);
+}
+
+// pop last FOR off the stack
+const IntegerFor* Basic::popIntegerFor(){
+	const IntegerFor *loop = integerForLoops.top();
+	integerForLoops.pop();
 	return loop;
 }

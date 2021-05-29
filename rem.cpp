@@ -8,7 +8,7 @@ using std::cout;
 Rem::Rem(const char* remark) : remark_(remark) {
 }
 
-bool Rem::execute(bool /* next */) const
+bool Rem::execute(int /* lineNumber */, bool /* next */) const
 {
    // Always go to the next line.  Even if it is a multi-statement
    // line like:

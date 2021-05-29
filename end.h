@@ -7,7 +7,7 @@
 
 class End : public Program {
 public:
-	bool execute(bool next) const;				// run this line of the program
+	bool execute(int lineNumber, bool next) const;				// run this line of the program
 	void list(std::ostream& os) const;	// list this line
 };
 

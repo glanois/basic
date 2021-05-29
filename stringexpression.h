@@ -8,13 +8,14 @@ Class used for storing a text value
 */
 class StringExpression : public Expression {
 public:
-	StringExpression(const char *text);		// take a string as input
+	StringExpression(const std::string& text);		// take a string as input
 	
 	const std::string print() const;		// return the stored value
 	const std::string list() const;			// printable version
+	virtual std::string value() const;
 	
 private:
-	std::string text;						// data storage
+	std::string text_;						// data storage
 };
 
 #endif
