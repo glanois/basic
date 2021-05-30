@@ -83,8 +83,6 @@ IntegerOperatorExpression::IntegerOperatorExpression(
    , b_(b)
    , op_(op)
 {
-   std::cout << "DEBUG: IntegerOperatorExpression::IntegerOperatorExpression() - a = " << a_->print();
-   std::cout << " b = " << b_->print() << " op = " << op_ << std::endl;
 }
 
 IntegerOperatorExpression::IntegerOperatorExpression(
@@ -143,7 +141,6 @@ int IntegerOperatorExpression::value() const
    default:
       printf("ERROR: operation '%c' not supported.\n", op_);
 	}
-   std::cout << "DEBUG: IntegerOperatorExpression::value() - result = " << result << std::endl;
    return result;
 }
 
@@ -157,8 +154,6 @@ StringOperatorExpression::StringOperatorExpression(
    , b_(b)
    , op_(op)
 {
-   std::cout << "DEBUG: StringOperatorExpression::StringOperatorExpression() - a = " << a_->print();
-   std::cout << " b = " << b_->print() << " op = " << op_ << std::endl;
 }
 
 StringOperatorExpression::~StringOperatorExpression()
@@ -189,6 +184,5 @@ std::string StringOperatorExpression::value() const
    default:
       printf("ERROR: operation '%c' not supported.\n", op_);
 	}
-   std::cout << "DEBUG: StringOperatorExpression::value() - result = " << result << std::endl;
    return result;
 }

@@ -38,7 +38,6 @@ IntegerLet::IntegerLet(
    var_(var),
    expression_(expression)
 {
-   std::cout << "DEBUG: IntegerLet::IntegerLet() - var_ = " << var_ << ", expression_ = " << expression_->list() << std::endl;
 }
 
 IntegerLet::~IntegerLet(){

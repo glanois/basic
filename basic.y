@@ -326,7 +326,7 @@ integerTerm:
 ;
 
 stringExpr:
-   stringTerm { printf("DEBUG: basic.y - stringExpr: stringTerm\n"); }
+   stringTerm
    | addStringExpr
 ;
 
@@ -336,12 +336,10 @@ addStringExpr:
 
 stringTerm:
 	STRING { 
-      printf("DEBUG: basic.y - stringTerm: STRING = %s\n", $1);
       $$ = new StringExpression(std::string($1)); 
       free($1);	// malloced in basic.l
    }
    | SVAR { 
-      printf("DEBUG: basic.y - stringTerm: SVAR = %s\n", $1);
       $$ = new StringVariableExpression($1); 
       free($1); 	// malloced in basic.l
    }
