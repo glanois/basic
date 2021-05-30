@@ -1,6 +1,7 @@
 #ifndef _REM_H_
 #define _REM_H_
 
+#include <string>
 #include <iostream>
 
 #include "program.h"
@@ -10,7 +11,7 @@ This class implements the REM statement
 */
 class Rem : public Program {
 public:
-	Rem(const char* remark);	// instantiate rem statement
+	Rem(const std::string& remark);	// instantiate rem statement
 	
    virtual bool execute(int lineNumber, bool next) const;
 

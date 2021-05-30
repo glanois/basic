@@ -10,8 +10,8 @@ class DoubleExpression : public Expression {
 public:
 	DoubleExpression(double d);				// take a double as input
 	
-	virtual const std::string print() const;	// return the stored value
-	virtual const std::string list() const;		// printable version
+	virtual std::string print() const;	// return the stored value
+	virtual std::string list() const;		// printable version
 	virtual double value() const;				// numerical evaluation
 	
 private:

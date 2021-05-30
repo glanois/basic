@@ -5,6 +5,7 @@
 
 #include "doubleexpression.h"
 #include "integerexpression.h"
+#include "stringexpression.h"
 #include "basic.h"
 
 /*
@@ -14,8 +15,8 @@ class DoubleVariableExpression : public DoubleExpression {
 public:
 	DoubleVariableExpression(const std::string& name);
 
-	const std::string print() const;		// return the stored value
-	const std::string list() const;			// printable version
+	std::string print() const;		// return the stored value
+	std::string list() const;			// printable version
 	double value() const;					// numerical evaluation
 
 private:
@@ -26,9 +27,21 @@ class IntegerVariableExpression : public IntegerExpression {
 public:
 	IntegerVariableExpression(const std::string& name);
 
-	const std::string print() const;		// return the stored value
-	const std::string list() const;			// printable version
+	std::string print() const;		// return the stored value
+	std::string list() const;			// printable version
 	long value() const;					// numerical evaluation
+
+private:
+	std::string name_;
+};
+
+class StringVariableExpression : public StringExpression {
+public:
+	StringVariableExpression(const std::string& name);
+
+	std::string print() const;		// return the stored value
+	std::string list() const;			// printable version
+   std::string value() const;					// numerical evaluation
 
 private:
 	std::string name_;

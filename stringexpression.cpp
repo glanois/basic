@@ -7,13 +7,13 @@ StringExpression::StringExpression(const std::string& text)
 }
 
 // return the text value
-const std::string StringExpression::print() const
+std::string StringExpression::print() const
 {
 	return text_;
 }
 
 // return a string for printing
-const std::string StringExpression::list() const
+std::string StringExpression::list() const
 {
 	return '"' + text_ + '"';
 }

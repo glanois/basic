@@ -5,7 +5,8 @@ using std::endl;
 using std::cout;
 
 // instantiate rem statement
-Rem::Rem(const char* remark) : remark_(remark) {
+Rem::Rem(const std::string& remark) : remark_(remark) 
+{
 }
 
 bool Rem::execute(int /* lineNumber */, bool /* next */) const

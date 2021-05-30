@@ -1,10 +1,11 @@
+#include <iostream>
 #include <cmath>
 
 #include "operatorexpression.h"
 
 DoubleOperatorExpression::DoubleOperatorExpression(
-   const DoubleExpression& a, 
-   const DoubleExpression& b, 
+   DoubleExpression* a, 
+   DoubleExpression* b, 
    char op) 
    : DoubleExpression(0)
    , a_(a)
@@ -14,7 +15,7 @@ DoubleOperatorExpression::DoubleOperatorExpression(
 }
 
 DoubleOperatorExpression::DoubleOperatorExpression(
-   const DoubleExpression& a, 
+   DoubleExpression* a, 
    char op) 
    : DoubleExpression(0)
    , a_(a)
@@ -25,17 +26,22 @@ DoubleOperatorExpression::DoubleOperatorExpression(
 
 DoubleOperatorExpression::~DoubleOperatorExpression()
 {
+   delete a_;
+   a_ = 0;
+   delete b_; 
+   b_ = 0;
+   op_ = '\0';
 }
 
-const std::string DoubleOperatorExpression::print() const{
+std::string DoubleOperatorExpression::print() const{
 	return std::to_string(value());
 }
 
-const std::string DoubleOperatorExpression::list() const{
+std::string DoubleOperatorExpression::list() const{
 	if( op_ != 'n' )
-		return a_.list() + op_ + b_.list();
+		return a_->list() + " " + op_ + " " + b_->list();
 	else
-		return "-" + a_.list();
+		return "-" + a_->list();
 }
 
 double DoubleOperatorExpression::value() const
@@ -44,22 +50,22 @@ double DoubleOperatorExpression::value() const
 	switch (op_)
    {
 		case '+':
-			result = a_.value() + b_.value();
+			result = a_->value() + b_->value();
          break;
 		case '-':
-			result = a_.value() - b_.value();
+			result = a_->value() - b_->value();
          break;
 		case '*':
-			result = a_.value() * b_.value();
+			result = a_->value() * b_->value();
          break;
 		case '/':
-         result = a_.value() / b_.value();
+         result = a_->value() / b_->value();
          break; 
 		case '^':
-			result = pow(a_.value(), b_.value());
+			result = pow(a_->value(), b_->value());
          break;
 		case 'n':
-			result = -a_.value();
+			result = -a_->value();
          break;
    default:
       printf("ERROR: operation '%c' not supported.\n", op_);
@@ -69,18 +75,20 @@ double DoubleOperatorExpression::value() const
 
 
 IntegerOperatorExpression::IntegerOperatorExpression(
-   const IntegerExpression& a, 
-   const IntegerExpression& b, 
+   IntegerExpression* a, 
+   IntegerExpression* b, 
    char op) 
    : IntegerExpression(0)
    , a_(a)
    , b_(b)
    , op_(op)
 {
+   std::cout << "DEBUG: IntegerOperatorExpression::IntegerOperatorExpression() - a = " << a_->print();
+   std::cout << " b = " << b_->print() << " op = " << op_ << std::endl;
 }
 
 IntegerOperatorExpression::IntegerOperatorExpression(
-   const IntegerExpression& a, 
+   IntegerExpression* a, 
    char op) 
    : IntegerExpression(0)
    , a_(a)
@@ -91,17 +99,22 @@ IntegerOperatorExpression::IntegerOperatorExpression(
 
 IntegerOperatorExpression::~IntegerOperatorExpression()
 {
+   delete a_;
+   a_ = 0;
+   delete b_; 
+   b_ = 0;
+   op_ = '\0';
 }
 
-const std::string IntegerOperatorExpression::print() const{
+std::string IntegerOperatorExpression::print() const{
 	return std::to_string(value());
 }
 
-const std::string IntegerOperatorExpression::list() const{
+std::string IntegerOperatorExpression::list() const{
 	if( op_ != 'n' )
-		return a_.list() + op_ + b_.list();
+		return a_->list() + " " + op_ + " " + b_->list();
 	else
-		return "-" + a_.list();
+		return "-" + a_->list();
 }
 
 long IntegerOperatorExpression::value() const
@@ -110,25 +123,72 @@ long IntegerOperatorExpression::value() const
 	switch (op_)
    {
 		case '+':
-			result = a_.value() + b_.value();
+			result = a_->value() + b_->value();
          break;
 		case '-':
-			result = a_.value() - b_.value();
+			result = a_->value() - b_->value();
          break;
 		case '*':
-			result = a_.value() * b_.value();
+			result = a_->value() * b_->value();
          break;
 		case '/':
-         result = a_.value() / b_.value();
+         result = a_->value() / b_->value();
          break; 
 		case '^':
-			result = pow(a_.value(), b_.value());
+			result = pow(a_->value(), b_->value());
          break;
 		case 'n':
-			result = -a_.value();
+			result = -a_->value();
          break;
    default:
       printf("ERROR: operation '%c' not supported.\n", op_);
 	}
+   std::cout << "DEBUG: IntegerOperatorExpression::value() - result = " << result << std::endl;
+   return result;
+}
+
+
+StringOperatorExpression::StringOperatorExpression(
+   StringExpression* a, 
+   StringExpression* b, 
+   char op) 
+   : StringExpression("")
+   , a_(a)
+   , b_(b)
+   , op_(op)
+{
+   std::cout << "DEBUG: StringOperatorExpression::StringOperatorExpression() - a = " << a_->print();
+   std::cout << " b = " << b_->print() << " op = " << op_ << std::endl;
+}
+
+StringOperatorExpression::~StringOperatorExpression()
+{
+   delete a_;
+   a_ = 0;
+   delete b_; 
+   b_ = 0;
+   op_ = '\0';
+}
+
+std::string StringOperatorExpression::print() const{
+	return value();
+}
+
+std::string StringOperatorExpression::list() const{
+   return a_->list() + " " + op_ + " " + b_->list();
+}
+
+std::string StringOperatorExpression::value() const
+{
+   std::string result;
+	switch (op_)
+   {
+		case '+':
+			result = a_->value() + b_->value();
+         break;
+   default:
+      printf("ERROR: operation '%c' not supported.\n", op_);
+	}
+   std::cout << "DEBUG: StringOperatorExpression::value() - result = " << result << std::endl;
    return result;
 }

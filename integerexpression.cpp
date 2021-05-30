@@ -9,13 +9,14 @@ IntegerExpression::IntegerExpression(long d)
 }
 
 // return the text value
-const std::string IntegerExpression::print() const
+std::string IntegerExpression::print() const
 {
-	return std::to_string(d_);
+   std::string s = std::to_string(d_);
+   return s;
 }
 
 // return a string for printing
-const std::string IntegerExpression::list() const
+std::string IntegerExpression::list() const
 {
 	return print();
 }

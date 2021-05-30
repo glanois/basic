@@ -5,34 +5,49 @@
 
 #include "doubleexpression.h"
 #include "integerexpression.h"
+#include "stringexpression.h"
 
 /*
 This class is used to store a parenthesized expression
 */
 class DoubleParenExpression : public DoubleExpression {
 public:
-	DoubleParenExpression(const DoubleExpression& exp);
+	DoubleParenExpression(DoubleExpression* exp);
 	~DoubleParenExpression();
 
-	const std::string print() const;		// return a printable value
-	const std::string list() const;			// print a listing version
+	std::string print() const;		// return a printable value
+	std::string list() const;			// print a listing version
 	double value() const;					// numerical evaluation
 
 private:
-	DoubleExpression exp_;
+	DoubleExpression* exp_;
 };
 
 class IntegerParenExpression : public IntegerExpression {
 public:
-	IntegerParenExpression(const IntegerExpression& exp);
+	IntegerParenExpression(IntegerExpression* exp);
 	~IntegerParenExpression();
 
-	const std::string print() const;		// return a printable value
-	const std::string list() const;			// print a listing version
+	std::string print() const;		// return a printable value
+	std::string list() const;			// print a listing version
 	long value() const;					// numerical evaluation
 
 private:
-	IntegerExpression exp_;
+	IntegerExpression* exp_;
+};
+
+
+class StringParenExpression : public StringExpression {
+public:
+	StringParenExpression(StringExpression* exp);
+	~StringParenExpression();
+
+	std::string print() const;		// return a printable value
+	std::string list() const;			// print a listing version
+   std::string value() const;					// numerical evaluation
+
+private:
+	StringExpression* exp_;
 };
 
 #endif

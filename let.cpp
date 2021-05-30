@@ -1,18 +1,20 @@
 #include "let.h"
 
-DoubleLet::DoubleLet(char *var, const DoubleExpression *expression){
-	this->var = var;
-	this->expression = expression;
+DoubleLet::DoubleLet(
+   const std::string& var, 
+   const DoubleExpression* expression) :
+   var_(var),
+   expression_(expression)
+{
 }
 
-// clean up the pointer
 DoubleLet::~DoubleLet(){
-	delete expression;
 }
 
 // store the value of the Expression in the Basic vars map
-bool DoubleLet::execute(int /* lineNumber */, bool next) const{
-	Basic::instance()->assign(var, expression->value());
+bool DoubleLet::execute(int /* lineNumber */, bool next) const
+{
+	Basic::instance()->assign(var_, expression_->value());
    if (next)
    {
       Basic::instance()->nextLine();
@@ -21,24 +23,28 @@ bool DoubleLet::execute(int /* lineNumber */, bool next) const{
 }
 
 // list this LET statement
-void DoubleLet::list(std::ostream& os) const{
-	os << "LET " << var << " = " << expression->list();
+void DoubleLet::list(std::ostream& os) const
+{
+	os << "LET " << var_ << " = " << expression_->list();
 }
 
 
-IntegerLet::IntegerLet(char *var, const IntegerExpression *expression){
-	this->var = var;
-	this->expression = expression;
+IntegerLet::IntegerLet(
+   const std::string& var, 
+   const IntegerExpression* expression) :
+   var_(var),
+   expression_(expression)
+{
+   std::cout << "DEBUG: IntegerLet::IntegerLet() - var_ = " << var_ << ", expression_ = " << expression_->list() << std::endl;
 }
 
-// clean up the pointer
 IntegerLet::~IntegerLet(){
-	delete expression;
 }
 
 // store the value of the Expression in the Basic vars map
-bool IntegerLet::execute(int /* lineNumber */, bool next) const{
-	Basic::instance()->assign(var, expression->value());
+bool IntegerLet::execute(int /* lineNumber */, bool next) const
+{
+	Basic::instance()->assign(var_, expression_->value());
    if (next)
    {
       Basic::instance()->nextLine();
@@ -47,24 +53,27 @@ bool IntegerLet::execute(int /* lineNumber */, bool next) const{
 }
 
 // list this LET statement
-void IntegerLet::list(std::ostream& os) const{
-	os << "LET " << var << " = " << expression->list();
+void IntegerLet::list(std::ostream& os) const
+{
+	os << "LET " << var_ << " = " << expression_->list();
 }
 
 
-StringLet::StringLet(char *var, const StringExpression *expression){
-	this->var = var;
-	this->expression = expression;
+StringLet::StringLet(
+   const std::string& var, 
+   const StringExpression* expression) :
+   var_(var),
+   expression_(expression)
+{
 }
 
-// clean up the pointer
 StringLet::~StringLet(){
-	delete expression;
 }
 
 // store the value of the Expression in the Basic vars map
-bool StringLet::execute(int /* lineNumber */, bool next) const{
-	Basic::instance()->assign(var, expression->value());
+bool StringLet::execute(int /* lineNumber */, bool next) const
+{
+	Basic::instance()->assign(var_, expression_->value());
    if (next)
    {
       Basic::instance()->nextLine();
@@ -73,7 +82,7 @@ bool StringLet::execute(int /* lineNumber */, bool next) const{
 }
 
 // list this LET statement
-void StringLet::list(std::ostream& os) const{
-	os << "LET " << var << " = " << expression->list();
+void StringLet::list(std::ostream& os) const
+{
+	os << "LET " << var_ << " = " << expression_->list();
 }
-
