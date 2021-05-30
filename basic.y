@@ -5,6 +5,7 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <cmath>
 
 extern "C" int yylex();
 extern "C" int yyparse();
@@ -47,7 +48,8 @@ void yyerror(const char *s);
 	IntegerExpression *ixVal;
 	StringExpression *sxVal;
 	std::vector<Expression*> *eList;
-	std::vector<std::string> *sList;
+	std::vector<std::string> *rList;
+   /* xxx - this vector needs to hold float, int, and std::string. */
 	std::vector<float> *dList;
    std::vector<Program*>* stmtList;
 }
@@ -118,9 +120,9 @@ void yyerror(const char *s);
 %type <sxVal> addStringExpr
 %type <sxVal> stringTerm
 %type <sVal> comp
-%type <sList> stringList
+%type <rList> readList
 %type <stmtList> statementList
-%type <dList> floatList
+%type <dList> dataList
 
 %% /* Grammar rules and actions follow */
 
@@ -165,9 +167,20 @@ program:
       $$ = new FloatLet(std::string($2), $4);
       free($2);	// malloced in basic.l
    }
+   | LET FVAR EQUAL integerExpr	{
+      $$ = new FloatLet(
+         std::string($2), 
+         new FloatExpression(static_cast<float>($4->value())));
+      free($2);	// malloced in basic.l
+   }
 	| LET IVAR EQUAL integerExpr	{
-      printf("basic.y program: LET IVAR EQUAL integerExpr IVAR = %s integerExpr = %s\n", $2, $4->list().c_str());
       $$ = new IntegerLet(std::string($2), $4);
+      free($2);	// malloced in basic.l
+   }
+	| LET IVAR EQUAL floatExpr	{
+      $$ = new IntegerLet(
+         std::string($2), 
+         new IntegerExpression(static_cast<int>(std::round($4->value()))));
       free($2);	// malloced in basic.l
    }
    | LET SVAR EQUAL stringExpr	{
@@ -180,8 +193,8 @@ program:
    | IF integerExpr comp integerExpr THEN INT { $$ = new IntegerIfThen($2, $4, $3, $6); }
    /* xxx | IF stringExpr comp stringExpr THEN INT
    { $$ = new StringIfThen($2, $4, $3, $6); } */
-	| DATA floatList		{ $$ = new Data(*$2); }
-	| READ stringList		{ $$ = new Read(*$2); }
+	| DATA dataList		{ $$ = new Data(*$2); }
+	| READ readList		{ $$ = new Read(*$2); }
 	| FOR FVAR EQUAL floatExpr TO floatExpr {
 								$$ = new FloatFor($4, $6, NULL, $2);
 							}
@@ -207,40 +220,34 @@ comp:
 	| NOTEQUAL				{ $$ = "<>"; }
 ;
 
-stringList:
-	SVAR						{ $$ = new std::vector<std::string>(1, $1); }
-	| stringList COMMA FVAR	{
-								$1->push_back($3);
-								$$ = $1;
-							}
-	| stringList COMMA IVAR	{
-								$1->push_back($3);
-								$$ = $1;
-							}
-	| stringList COMMA SVAR	{
-								$1->push_back($3);
-								$$ = $1;
-							}
+readList:
+	FVAR	 { $$ = new std::vector<std::string>(1, $1); }
+	| IVAR { $$ = new std::vector<std::string>(1, $1); }
+	| SVAR { $$ = new std::vector<std::string>(1, $1); }
+	| readList COMMA FVAR {
+      $1->push_back($3);
+      $$ = $1; }
+	| readList COMMA IVAR {
+      $1->push_back($3);
+      $$ = $1; }
+	| readList COMMA SVAR {
+      $1->push_back($3);
+      $$ = $1; }
+;
+
+/* xxx - that vector has to hold FLOAT, INT, and STRING. */
+dataList:
+	FLOAT { $$ = new std::vector<float>(1, $1); }
+	| dataList COMMA FLOAT { 
+      $1->push_back($3); 
+      $$ = $1; }
 ;
 
 statementList:
-	program								{ $$ = new std::vector<Program*>(1, $1); }
-	| statementList COLON program	{ $1->push_back($3);
-											$$ = $1;
-										}
-;
-
-floatList:
-	FLOAT						{ $$ = new std::vector<float>(1, $1); }
-	| INT						{ $$ = new std::vector<float>(1, $1); }
-	| floatList COMMA FLOAT	{
-									$1->push_back($3);
-									$$ = $1;
-								}
-	| floatList COMMA INT		{
-									$1->push_back($3);
-									$$ = $1;
-								}
+	program { $$ = new std::vector<Program*>(1, $1); }
+	| statementList COLON program	{ 
+      $1->push_back($3);
+      $$ = $1; }
 ;
 
 exprList:
