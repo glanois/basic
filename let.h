@@ -4,7 +4,7 @@
 #include <string>
 
 #include "program.h"
-#include "doubleexpression.h"
+#include "floatexpression.h"
 #include "integerexpression.h"
 #include "stringexpression.h"
 #include "basic.h"
@@ -12,17 +12,17 @@
 /*
 The Let class provides variable assignment capability.
 */
-class DoubleLet : public Program {
+class FloatLet : public Program {
 public:
-	DoubleLet(const std::string& var, const DoubleExpression* expression);	// create a new LET assignment
-	~DoubleLet();												// clean up
+	FloatLet(const std::string& var, const FloatExpression* expression);	// create a new LET assignment
+	~FloatLet();												// clean up
 
 	bool execute(int lineNumber, bool next) const;				// run this line of the program
 	void list(std::ostream& os) const;	// list this line
 	
 private:
 	std::string var_;
-	const DoubleExpression* expression_;
+	const FloatExpression* expression_;
 };
 
 class IntegerLet : public Program {

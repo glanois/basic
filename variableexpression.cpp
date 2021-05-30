@@ -2,29 +2,29 @@
 
 #include "variableexpression.h"
 
-DoubleVariableExpression::DoubleVariableExpression(const std::string& name) 
-   : DoubleExpression(0)
+FloatVariableExpression::FloatVariableExpression(const std::string& name) 
+   : FloatExpression(0)
    , name_(name)
 {
 }
 
 // return the stored value
-std::string DoubleVariableExpression::print() const
+std::string FloatVariableExpression::print() const
 {
-   double v = value();
+   float v = value();
 	return std::to_string(v);
 }
 
 // printable version
-std::string DoubleVariableExpression:: list() const
+std::string FloatVariableExpression:: list() const
 {
 	return name_;
 }
 
 // numerical evaluation
-double DoubleVariableExpression::value() const
+float FloatVariableExpression::value() const
 {
-   double v = Basic::instance()->resolveDouble(name_);
+   float v = Basic::instance()->resolveFloat(name_);
 	return v;
 }
 
@@ -38,7 +38,7 @@ IntegerVariableExpression::IntegerVariableExpression(const std::string& name)
 // return the stored value
 std::string IntegerVariableExpression::print() const
 {
-   long v = value();
+   int v = value();
 	return std::to_string(v);
 }
 
@@ -49,9 +49,9 @@ std::string IntegerVariableExpression:: list() const
 }
 
 // numerical evaluation
-long IntegerVariableExpression::value() const
+int IntegerVariableExpression::value() const
 {
-   long v = Basic::instance()->resolveInteger(name_);
+   int v = Basic::instance()->resolveInteger(name_);
 	return v;
 }
 

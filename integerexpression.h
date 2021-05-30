@@ -8,14 +8,14 @@
  */
 class IntegerExpression : public Expression {
 public:
-	IntegerExpression(long d);				// take an integer as input
+	IntegerExpression(int d);				// take an integer as input
 	
 	virtual std::string print() const;	// return the stored value
 	virtual std::string list() const;		// printable version
-	virtual long value() const;				// numerical evaluation
+	virtual int value() const;				// numerical evaluation
 	
 private:
-	long d_;								// data storage
+	int d_;								// data storage
 };
 
 #endif

@@ -1,26 +1,26 @@
 #ifndef _OPERATOREXPRESSION_H_
 #define _OPERATOREXPRESSION_H_
 
-#include "doubleexpression.h"
+#include "floatexpression.h"
 #include "integerexpression.h"
 #include "stringexpression.h"
 
 /*
-Class for performing mathematical operations on DoubleExpressions.
+Class for performing mathematical operations on FloatExpressions.
 */
-class DoubleOperatorExpression : public DoubleExpression {
+class FloatOperatorExpression : public FloatExpression {
 public:
-	DoubleOperatorExpression(DoubleExpression* a, DoubleExpression* b, char op);
-	DoubleOperatorExpression(DoubleExpression* a, char op);
-	~DoubleOperatorExpression();					// delete the sub-expressions
+	FloatOperatorExpression(FloatExpression* a, FloatExpression* b, char op);
+	FloatOperatorExpression(FloatExpression* a, char op);
+	~FloatOperatorExpression();					// delete the sub-expressions
 	
 	std::string print() const;		// return the stored value
 	std::string list() const;			// printable version
-	double value() const;					// value of performed operation
+	float value() const;					// value of performed operation
 
 private:
-	DoubleExpression* a_;
-   DoubleExpression* b_;
+	FloatExpression* a_;
+   FloatExpression* b_;
 	char op_;								// operation to perform
 };
 
@@ -36,7 +36,7 @@ public:
 	
 	std::string print() const;		// return the stored value
 	std::string list() const;			// printable version
-	long value() const;					// value of performed operation
+	int value() const;					// value of performed operation
 
 private:
 	IntegerExpression* a_;

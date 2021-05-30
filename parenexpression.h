@@ -3,24 +3,24 @@
 
 #include <string>
 
-#include "doubleexpression.h"
+#include "floatexpression.h"
 #include "integerexpression.h"
 #include "stringexpression.h"
 
 /*
 This class is used to store a parenthesized expression
 */
-class DoubleParenExpression : public DoubleExpression {
+class FloatParenExpression : public FloatExpression {
 public:
-	DoubleParenExpression(DoubleExpression* exp);
-	~DoubleParenExpression();
+	FloatParenExpression(FloatExpression* exp);
+	~FloatParenExpression();
 
 	std::string print() const;		// return a printable value
 	std::string list() const;			// print a listing version
-	double value() const;					// numerical evaluation
+	float value() const;					// numerical evaluation
 
 private:
-	DoubleExpression* exp_;
+	FloatExpression* exp_;
 };
 
 class IntegerParenExpression : public IntegerExpression {
@@ -30,7 +30,7 @@ public:
 
 	std::string print() const;		// return a printable value
 	std::string list() const;			// print a listing version
-	long value() const;					// numerical evaluation
+	int value() const;					// numerical evaluation
 
 private:
 	IntegerExpression* exp_;

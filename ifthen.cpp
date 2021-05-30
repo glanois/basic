@@ -4,7 +4,7 @@
 #include "basic.h"
 
 // create a new statement instance
-DoubleIfThen::DoubleIfThen(DoubleExpression *a, DoubleExpression *b, char *op, int line){
+FloatIfThen::FloatIfThen(FloatExpression *a, FloatExpression *b, char *op, int line){
 	this->a = a;
 	this->b = b;
 	this->op = op;
@@ -12,15 +12,15 @@ DoubleIfThen::DoubleIfThen(DoubleExpression *a, DoubleExpression *b, char *op, i
 }
 
 // clean up the expression pointers
-DoubleIfThen::~DoubleIfThen(){
+FloatIfThen::~FloatIfThen(){
 	delete a;
 	delete b;
 }
 
 // run this line of the program
-bool DoubleIfThen::execute(int /* lineNumber */, bool next) const{
-	double aVal = a->value();
-	double bVal = b->value();
+bool FloatIfThen::execute(int /* lineNumber */, bool next) const{
+	float aVal = a->value();
+	float bVal = b->value();
 	bool result = false;
 	
 	if( strcmp(op, "=") == 0 )
@@ -54,7 +54,7 @@ bool DoubleIfThen::execute(int /* lineNumber */, bool next) const{
 }
 
 // list this line
-void DoubleIfThen::list(std::ostream& os) const{
+void FloatIfThen::list(std::ostream& os) const{
 	os << "IF " << a->list() << ' ' << op << ' ';
 	os << b->list() << " THEN " << line;
 }
@@ -76,8 +76,8 @@ IntegerIfThen::~IntegerIfThen(){
 
 // run this line of the program
 bool IntegerIfThen::execute(int /* lineNumber */, bool next) const{
-	long aVal = a->value();
-	long bVal = b->value();
+	int aVal = a->value();
+	int bVal = b->value();
 	bool result = false;
 	
 	if( strcmp(op, "=") == 0 )

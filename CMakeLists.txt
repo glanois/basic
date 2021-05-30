@@ -49,7 +49,7 @@ ${CMAKE_CURRENT_BINARY_DIR}/lex.yy.cpp
 ${CMAKE_CURRENT_BINARY_DIR}/basic.tab.cpp 
 basic.cpp
 data.cpp
-doubleexpression.cpp
+floatexpression.cpp
 end.cpp
 expression.cpp
 for.cpp

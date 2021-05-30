@@ -2,34 +2,34 @@
 #include "basic.h"
 #include "for.h"
 
-std::map<const DoubleNext*, const DoubleFor*> DoubleNext::loop;
+std::map<const FloatNext*, const FloatFor*> FloatNext::loop;
 std::map<const IntegerNext*, const IntegerFor*> IntegerNext::loop;
 
 // initialize
-DoubleNext::DoubleNext(std::string var){
+FloatNext::FloatNext(std::string var){
 	this->var = var;
 }
 
 // clean up
-DoubleNext::~DoubleNext(){
+FloatNext::~FloatNext(){
 	loop.erase(this);
 }
 
 // run this line of the program
-bool DoubleNext::execute(int /* lineNumber */, bool /* next */) const{
+bool FloatNext::execute(int /* lineNumber */, bool /* next */) const{
 	loop.at(this)->doNext();
 	Basic::instance()->gotoProgram(loop[this]);
    return true;
 }
 
 // list this line
-void DoubleNext::list(std::ostream& os) const{
+void FloatNext::list(std::ostream& os) const{
 	os << "NEXT " << var;
 }
 
 // run before main program execution
-void DoubleNext::preExecute() const{
-	loop[this] = Basic::instance()->popDoubleFor();
+void FloatNext::preExecute() const{
+	loop[this] = Basic::instance()->popFloatFor();
 	loop.at(this)->registerNext(this);
 }
 

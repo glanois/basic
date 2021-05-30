@@ -1,29 +1,29 @@
 #include "parenexpression.h"
 
-DoubleParenExpression::DoubleParenExpression(DoubleExpression* exp) 
-   : DoubleExpression(0)
+FloatParenExpression::FloatParenExpression(FloatExpression* exp) 
+   : FloatExpression(0)
    , exp_(exp)
 {
 }
 
-DoubleParenExpression::~DoubleParenExpression()
+FloatParenExpression::~FloatParenExpression()
 {
    delete exp_;
    exp_ = 0;
 }
 
 // return a printable value
-std::string DoubleParenExpression::print() const{
+std::string FloatParenExpression::print() const{
 	return std::to_string(value());
 }
 
 // print a listing version
-std::string DoubleParenExpression::list() const{
+std::string FloatParenExpression::list() const{
 	return "(" + exp_->list() + ")";
 }
 
 // numerical evaluation
-double DoubleParenExpression::value() const{
+float FloatParenExpression::value() const{
 	return exp_->value();
 }
 
@@ -49,7 +49,7 @@ std::string IntegerParenExpression::list() const{
 }
 
 // numerical evaluation
-long IntegerParenExpression::value() const{
+int IntegerParenExpression::value() const{
 	return exp_->value();
 }
 

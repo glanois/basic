@@ -9,7 +9,7 @@
 
 class Program;
 class Expression;
-class DoubleExpression;
+class FloatExpression;
 class IntegerExpression;
 class StringExpression;
 
@@ -28,7 +28,7 @@ DIGIT    [0-9]
 					yylval.sVal = strndup(yytext+1, strlen(yytext)-2);
 					return STRING;
 				}
-(({DIGIT}+"."?)|("."{DIGIT}+)){DIGIT}*(E-?{DIGIT}+)?	{ yylval.dVal = atof(yytext); return DOUBLE; }
+(({DIGIT}+"."?)|("."{DIGIT}+)){DIGIT}*(E-?{DIGIT}+)?	{ yylval.dVal = atof(yytext); return FLOAT; }
 PRINT			{ return PRINT; }
 REM.*			{ yylval.sVal = strndup(yytext, 512); return REMARK; }
 RUN				{ return RUN; }

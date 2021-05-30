@@ -3,7 +3,7 @@
 #include "integerexpression.h"
 
 // create a new IntegerExpression, storing its value
-IntegerExpression::IntegerExpression(long d)
+IntegerExpression::IntegerExpression(int d)
    : d_(d)
 {
 }
@@ -22,7 +22,7 @@ std::string IntegerExpression::list() const
 }
 
 // return the value
-long IntegerExpression::value() const
+int IntegerExpression::value() const
 {
 	return d_;
 }

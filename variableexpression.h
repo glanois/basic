@@ -3,7 +3,7 @@
 
 #include <string>
 
-#include "doubleexpression.h"
+#include "floatexpression.h"
 #include "integerexpression.h"
 #include "stringexpression.h"
 #include "basic.h"
@@ -11,13 +11,13 @@
 /*
 This class is used to access variable inside an expression
 */
-class DoubleVariableExpression : public DoubleExpression {
+class FloatVariableExpression : public FloatExpression {
 public:
-	DoubleVariableExpression(const std::string& name);
+	FloatVariableExpression(const std::string& name);
 
 	std::string print() const;		// return the stored value
 	std::string list() const;			// printable version
-	double value() const;					// numerical evaluation
+	float value() const;					// numerical evaluation
 
 private:
 	std::string name_;
@@ -29,7 +29,7 @@ public:
 
 	std::string print() const;		// return the stored value
 	std::string list() const;			// printable version
-	long value() const;					// numerical evaluation
+	int value() const;					// numerical evaluation
 
 private:
 	std::string name_;

@@ -68,12 +68,12 @@ Basic *Basic::instance(){
 }
 
 // assign a value to a variable
-void Basic::assign(const std::string& var, double value){
-   doubleVars[var] = value;
+void Basic::assign(const std::string& var, float value){
+   floatVars[var] = value;
 }
 
 // assign a value to a variable
-void Basic::assign(const std::string& var, long value){
+void Basic::assign(const std::string& var, int value){
    integerVars[var] = value;
 }
 
@@ -83,10 +83,10 @@ void Basic::assign(const std::string& var, const std::string& value){
 }
 
 // return variable value
-double Basic::resolveDouble(const std::string& var){
-   double result = 0.0;
-	map<string, double>::iterator it = doubleVars.find(var);
-	if( it == doubleVars.end() )
+float Basic::resolveFloat(const std::string& var){
+   float result = 0.0;
+	map<string, float>::iterator it = floatVars.find(var);
+	if( it == floatVars.end() )
    {
       printf("ERROR: variable %s not found.\n", var.c_str());
    }
@@ -98,9 +98,9 @@ double Basic::resolveDouble(const std::string& var){
 }
 
 // return variable value
-long Basic::resolveInteger(const std::string& var){
-   long result = 0;
-	map<string, long>::iterator it = integerVars.find(var);
+int Basic::resolveInteger(const std::string& var){
+   int result = 0;
+	map<string, int>::iterator it = integerVars.find(var);
 	if( it == integerVars.end() )
    {
       printf("ERROR: variable %s not found.\n", var.c_str());
@@ -227,21 +227,21 @@ void Basic::read(std::string var){
 }
 
 // push more values onto data vector
-void Basic::pushData(std::vector<double> vals){
-	for( std::vector<double>::iterator it = vals.begin(); it != vals.end(); ++it ){
+void Basic::pushData(std::vector<float> vals){
+	for( std::vector<float>::iterator it = vals.begin(); it != vals.end(); ++it ){
 		data.push_back(*it);
 	}
 }
 
 // push a FOR loop onto the stack
-void Basic::pushDoubleFor(const DoubleFor *forLoop){
-	doubleForLoops.push(forLoop);
+void Basic::pushFloatFor(const FloatFor *forLoop){
+	floatForLoops.push(forLoop);
 }
 
 // pop last FOR off the stack
-const DoubleFor* Basic::popDoubleFor(){
-	const DoubleFor *loop = doubleForLoops.top();
-	doubleForLoops.pop();
+const FloatFor* Basic::popFloatFor(){
+	const FloatFor *loop = floatForLoops.top();
+	floatForLoops.pop();
 	return loop;
 }
 

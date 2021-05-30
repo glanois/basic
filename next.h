@@ -6,23 +6,23 @@
 
 #include "program.h"
 
-class DoubleFor;
+class FloatFor;
 class IntegerFor;
 
 /*
 This class implements the NEXT part of a FOR/NEXT loop.
 */
-class DoubleNext : public Program {
+class FloatNext : public Program {
 public:
-	DoubleNext(std::string var);
-	~DoubleNext();
+	FloatNext(std::string var);
+	~FloatNext();
 	
 	bool execute(int lineNumber, bool next) const;				// run this line of the program
 	void list(std::ostream& os) const;	// list this line
 	void preExecute() const;			// run before main program execution
 	
 private:
-	static std::map<const DoubleNext*, const DoubleFor*> loop;	// FOR loop to jump back to
+	static std::map<const FloatNext*, const FloatFor*> loop;	// FOR loop to jump back to
 	std::string var;					// loop variable name
 };
 

@@ -2,14 +2,14 @@
 #include "basic.h"
 #include "next.h"
 
-std::map<const DoubleFor*, const DoubleNext*> DoubleFor::nextLine;
-std::map<const DoubleFor*, bool> DoubleFor::initial;
+std::map<const FloatFor*, const FloatNext*> FloatFor::nextLine;
+std::map<const FloatFor*, bool> FloatFor::initial;
 
 std::map<const IntegerFor*, const IntegerNext*> IntegerFor::nextLine;
 std::map<const IntegerFor*, bool> IntegerFor::initial;
 
 // initialize with all necessary information
-DoubleFor::DoubleFor(DoubleExpression *start, DoubleExpression *stop, DoubleExpression *step, std::string var){
+FloatFor::FloatFor(FloatExpression *start, FloatExpression *stop, FloatExpression *step, std::string var){
 	this->start = start;
 	this->stop = stop;
 	this->step = step;
@@ -18,7 +18,7 @@ DoubleFor::DoubleFor(DoubleExpression *start, DoubleExpression *stop, DoubleExpr
 }
 
 // clean up pointers
-DoubleFor::~DoubleFor(){
+FloatFor::~FloatFor(){
 	delete start;
 	delete stop;
 	delete step;
@@ -27,9 +27,9 @@ DoubleFor::~DoubleFor(){
 }
 
 // run this line of the program
-bool DoubleFor::execute(int /* lineNumber */, bool next) const{
-	double s = 1.0;						// default step size
-	double val;
+bool FloatFor::execute(int /* lineNumber */, bool next) const{
+	float s = 1.0;						// default step size
+	float val;
 	
 	if( step != NULL )
 		s = step->value();				// evaluate the step every time
@@ -37,7 +37,7 @@ bool DoubleFor::execute(int /* lineNumber */, bool next) const{
 	if( initial[this] ){						// start the loop
 		val = start->value();
 	} else {							// increment the loop
-		val = Basic::instance()->resolveDouble(var) + s;
+		val = Basic::instance()->resolveFloat(var) + s;
 	}
 	
 	initial[this] = true;						// reset
@@ -57,24 +57,24 @@ bool DoubleFor::execute(int /* lineNumber */, bool next) const{
 }
 
 // list this line
-void DoubleFor::list(std::ostream& os) const{
+void FloatFor::list(std::ostream& os) const{
 	os << "FOR " << var << " = " << start->list() << " TO " << stop->list();
 	if( step != NULL )
 		os << " STEP " << step->list();
 }
 
 // run before main program execution
-void DoubleFor::preExecute() const{
-	Basic::instance()->pushDoubleFor(this);
+void FloatFor::preExecute() const{
+	Basic::instance()->pushFloatFor(this);
 }
 
 // register NEXT statement
-void DoubleFor::registerNext(const DoubleNext *next) const{
+void FloatFor::registerNext(const FloatNext *next) const{
 	nextLine[this] = next;
 }
 
 // called from NEXT statement
-void DoubleFor::doNext() const{
+void FloatFor::doNext() const{
 	initial[this] = false;
 }
 
@@ -99,8 +99,8 @@ IntegerFor::~IntegerFor(){
 
 // run this line of the program
 bool IntegerFor::execute(int /* lineNumber */, bool next) const{
-	long s = 1.0;						// default step size
-	long val;
+	int s = 1;						// default step size
+	int val;
 	
 	if( step != NULL )
 		s = step->value();				// evaluate the step every time

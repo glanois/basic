@@ -3,28 +3,28 @@
 
 #include "operatorexpression.h"
 
-DoubleOperatorExpression::DoubleOperatorExpression(
-   DoubleExpression* a, 
-   DoubleExpression* b, 
+FloatOperatorExpression::FloatOperatorExpression(
+   FloatExpression* a, 
+   FloatExpression* b, 
    char op) 
-   : DoubleExpression(0)
+   : FloatExpression(0)
    , a_(a)
    , b_(b)
    , op_(op)
 {
 }
 
-DoubleOperatorExpression::DoubleOperatorExpression(
-   DoubleExpression* a, 
+FloatOperatorExpression::FloatOperatorExpression(
+   FloatExpression* a, 
    char op) 
-   : DoubleExpression(0)
+   : FloatExpression(0)
    , a_(a)
    , b_(0)
    , op_(op)
 {
 }
 
-DoubleOperatorExpression::~DoubleOperatorExpression()
+FloatOperatorExpression::~FloatOperatorExpression()
 {
    delete a_;
    a_ = 0;
@@ -33,20 +33,20 @@ DoubleOperatorExpression::~DoubleOperatorExpression()
    op_ = '\0';
 }
 
-std::string DoubleOperatorExpression::print() const{
+std::string FloatOperatorExpression::print() const{
 	return std::to_string(value());
 }
 
-std::string DoubleOperatorExpression::list() const{
+std::string FloatOperatorExpression::list() const{
 	if( op_ != 'n' )
 		return a_->list() + " " + op_ + " " + b_->list();
 	else
 		return "-" + a_->list();
 }
 
-double DoubleOperatorExpression::value() const
+float FloatOperatorExpression::value() const
 {
-   double result = 0.0;
+   float result = 0.0;
 	switch (op_)
    {
 		case '+':
@@ -117,9 +117,9 @@ std::string IntegerOperatorExpression::list() const{
 		return "-" + a_->list();
 }
 
-long IntegerOperatorExpression::value() const
+int IntegerOperatorExpression::value() const
 {
-   long result = 0.0;
+   int result = 0.0;
 	switch (op_)
    {
 		case '+':

@@ -1,7 +1,7 @@
 #include "data.h"
 #include "basic.h"
 
-Data::Data(std::vector<double> vals){
+Data::Data(std::vector<float> vals){
 	this->vals = vals;
 }
 
@@ -18,7 +18,7 @@ bool Data::execute(int /* lineNumber */, bool next) const
 // list this line
 void Data::list(std::ostream& os) const{
 	os << "DATA ";
-	std::vector<double>::const_iterator it = vals.cbegin();
+	std::vector<float>::const_iterator it = vals.cbegin();
 	os << *it;		// print out first value
 	for(  ++it; it != vals.cend(); ++it ){
 		os << ", " << *it;	// print out remaining values

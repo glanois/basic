@@ -1,18 +1,21 @@
 #include "let.h"
 
-DoubleLet::DoubleLet(
+FloatLet::FloatLet(
    const std::string& var, 
-   const DoubleExpression* expression) :
+   const FloatExpression* expression) :
    var_(var),
    expression_(expression)
 {
 }
 
-DoubleLet::~DoubleLet(){
+FloatLet::~FloatLet()
+{
+   delete expression_;
+   expression_ = 0;
 }
 
 // store the value of the Expression in the Basic vars map
-bool DoubleLet::execute(int /* lineNumber */, bool next) const
+bool FloatLet::execute(int /* lineNumber */, bool next) const
 {
 	Basic::instance()->assign(var_, expression_->value());
    if (next)
@@ -23,7 +26,7 @@ bool DoubleLet::execute(int /* lineNumber */, bool next) const
 }
 
 // list this LET statement
-void DoubleLet::list(std::ostream& os) const
+void FloatLet::list(std::ostream& os) const
 {
 	os << "LET " << var_ << " = " << expression_->list();
 }
