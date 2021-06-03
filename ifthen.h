@@ -4,6 +4,7 @@
 #include "program.h"
 #include "floatexpression.h"
 #include "integerexpression.h"
+#include "stringexpression.h"
 
 /*
 This class provides support for the IF-THEN statement.
@@ -32,6 +33,20 @@ public:
 
 private:
 	IntegerExpression *a, *b;
+	char *op;
+	int line;
+};
+
+class StringIfThen : public Program {
+public:
+	StringIfThen(StringExpression *a, StringExpression *b, char *op, int line);
+	~StringIfThen();
+	
+	bool execute(int lineNumber, bool next) const;				// run this line of the program
+	void list(std::ostream& os) const;	// list this line
+
+private:
+	StringExpression *a, *b;
 	char *op;
 	int line;
 };

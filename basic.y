@@ -189,10 +189,13 @@ program:
    }
 	| GOTO INT				{ $$ = new Goto($2); }
 	| END					{ $$ = new End(); }
-	| IF floatExpr  comp floatExpr  THEN INT { $$ = new FloatIfThen($2, $4, $3, $6); }
+	| IF floatExpr comp floatExpr  THEN INT { $$ = new FloatIfThen($2, $4, $3, $6); }
+   | IF integerExpr comp floatExpr  THEN INT { 
+      $$ = new FloatIfThen(new FloatExpression(static_cast<float>($2->value())), $4, $3, $6); }
+   | IF floatExpr comp integerExpr  THEN INT { 
+      $$ = new FloatIfThen($2, new FloatExpression(static_cast<float>($4->value())), $3, $6); }
    | IF integerExpr comp integerExpr THEN INT { $$ = new IntegerIfThen($2, $4, $3, $6); }
-   /* xxx | IF stringExpr comp stringExpr THEN INT
-   { $$ = new StringIfThen($2, $4, $3, $6); } */
+   | IF stringExpr comp stringExpr THEN INT { $$ = new StringIfThen($2, $4, $3, $6); }
 	| DATA dataList		{ $$ = new Data(*$2); }
 	| READ readList		{ $$ = new Read(*$2); }
 	| FOR FVAR EQUAL floatExpr TO floatExpr {
