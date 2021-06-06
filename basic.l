@@ -23,12 +23,18 @@ DIGIT    [0-9]
 %%
 
 [ \t]+	;		// skip white space
-{DIGIT}+		{ yylval.iVal = atoi(yytext); return INT; }
+{DIGIT}+		{ 
+   yylval.iVal = atoi(yytext);
+   std::cout << "basic.l DEBUG: yylval.iVal = " << yylval.iVal << " INT" << std::endl;
+   return INT; }
+(({DIGIT}+"."?)|("."{DIGIT}+)){DIGIT}*(E-?{DIGIT}+)?	{ 
+   yylval.fVal = atof(yytext); 
+   std::cout << "basic.l DEBUG: yylval.fVal = " << yylval.fVal << " FLOAT" << std::endl;
+   return FLOAT; }
 \"[^\"\n]*\"	{	// remove the quote marks from either end
 					yylval.sVal = strndup(yytext+1, strlen(yytext)-2);
 					return STRING;
 				}
-(({DIGIT}+"."?)|("."{DIGIT}+)){DIGIT}*(E-?{DIGIT}+)?	{ yylval.dVal = atof(yytext); return FLOAT; }
 PRINT			{ return PRINT; }
 REM.*			{ yylval.sVal = strndup(yytext, 512); return REMARK; }
 RUN				{ return RUN; }

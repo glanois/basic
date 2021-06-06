@@ -34,7 +34,16 @@ FloatOperatorExpression::~FloatOperatorExpression()
 }
 
 std::string FloatOperatorExpression::print() const{
-	return std::to_string(value());
+   std::string result;
+   if (a_->isInt() && b_->isInt()) {
+      // xxx - round() or trunc()?
+      result = std::to_string(static_cast<int>(std::round(value())));
+   }
+   else {
+      result = std::to_string(value());
+   }
+
+	return result;
 }
 
 std::string FloatOperatorExpression::list() const{

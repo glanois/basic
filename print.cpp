@@ -20,7 +20,7 @@ Print::Print(const std::vector<Expression*> *exprList)
 bool Print::execute(int lineNumber, bool next) const{
    if (exprList->size() == 0)
    {
-      // This might not actually be an error in the long term,
+      // xxx - This might not actually be an error in the long term,
       // since PRINT by itself can be used to print a blank line.
       // But for now guard against it until we implement handling it.
       std::cout << "ERROR at line number " << lineNumber;

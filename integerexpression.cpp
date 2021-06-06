@@ -3,15 +3,15 @@
 #include "integerexpression.h"
 
 // create a new IntegerExpression, storing its value
-IntegerExpression::IntegerExpression(int d)
-   : d_(d)
+IntegerExpression::IntegerExpression(int i)
+   : i_(i)
 {
 }
 
 // return the text value
 std::string IntegerExpression::print() const
 {
-   std::string s = std::to_string(d_);
+   std::string s = std::to_string(i_);
    return s;
 }
 
@@ -24,5 +24,5 @@ std::string IntegerExpression::list() const
 // return the value
 int IntegerExpression::value() const
 {
-	return d_;
+	return i_;
 }

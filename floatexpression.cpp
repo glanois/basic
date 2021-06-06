@@ -1,17 +1,25 @@
+#include <cmath>
 #include <iostream>
 
 #include "floatexpression.h"
 
 // create a new FloatExpression, storing its value
-FloatExpression::FloatExpression(float d)
-   : d_(d)
+FloatExpression::FloatExpression(float f, bool isInt)
+   : f_(f), isInt_(isInt)
 {
 }
 
 // return the text value
 std::string FloatExpression::print() const
 {
-	return std::to_string(d_);
+   std::string result;
+   if (isInt_) {
+      result = std::to_string(static_cast<int>(std::round(f_)));
+   }
+   else {
+      result = std::to_string(f_);
+   }
+	return result;
 }
 
 // return a string for printing
@@ -23,5 +31,11 @@ std::string FloatExpression::list() const
 // return the value
 float FloatExpression::value() const
 {
-	return d_;
+	return f_;
+}
+
+// return if it was originally an integer
+bool FloatExpression::isInt() const
+{
+   return isInt_;
 }

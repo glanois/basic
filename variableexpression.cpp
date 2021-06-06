@@ -30,7 +30,7 @@ float FloatVariableExpression::value() const
 
 
 IntegerVariableExpression::IntegerVariableExpression(const std::string& name) 
-   : IntegerExpression(0)
+   : FloatExpression(0.0)
    , name_(name)
 {
 }
@@ -49,10 +49,10 @@ std::string IntegerVariableExpression:: list() const
 }
 
 // numerical evaluation
-int IntegerVariableExpression::value() const
+float IntegerVariableExpression::value() const
 {
    int v = Basic::instance()->resolveInteger(name_);
-	return v;
+	return static_cast<float>(v);
 }
 
 
