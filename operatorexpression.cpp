@@ -35,7 +35,7 @@ FloatOperatorExpression::~FloatOperatorExpression()
 
 std::string FloatOperatorExpression::print() const{
    std::string result;
-   if (a_->isInt() && b_->isInt()) {
+   if ((op_ == 'n' && a_->isInt()) || (a_->isInt() && b_->isInt())) {
       // xxx - round() or trunc()?
       result = std::to_string(static_cast<int>(std::round(value())));
    }
@@ -46,11 +46,18 @@ std::string FloatOperatorExpression::print() const{
 	return result;
 }
 
-std::string FloatOperatorExpression::list() const{
-	if( op_ != 'n' )
-		return a_->list() + " " + op_ + " " + b_->list();
-	else
-		return "-" + a_->list();
+std::string FloatOperatorExpression::list() const
+{
+   std::string result;
+	if (op_ == 'n') {
+      // Unary minus.
+		result = "-" + a_->list();
+   }
+	else {
+      // There are two operands.
+		result = a_->list() + " " + op_ + " " + b_->list();
+   }
+   return result;
 }
 
 float FloatOperatorExpression::value() const
@@ -74,6 +81,7 @@ float FloatOperatorExpression::value() const
 			result = pow(a_->value(), b_->value());
          break;
 		case 'n':
+         // Unary minus.
 			result = -a_->value();
          break;
    default:
@@ -118,10 +126,16 @@ std::string IntegerOperatorExpression::print() const{
 }
 
 std::string IntegerOperatorExpression::list() const{
-	if( op_ != 'n' )
-		return a_->list() + " " + op_ + " " + b_->list();
-	else
-		return "-" + a_->list();
+   std::string result;
+	if (op_ == 'n') {
+      // Unary minus.
+		result = "-" + a_->list();
+   }
+	else {
+      // There are two operands.
+		result = a_->list() + " " + op_ + " " + b_->list();
+   }
+   return result;
 }
 
 int IntegerOperatorExpression::value() const
@@ -145,6 +159,7 @@ int IntegerOperatorExpression::value() const
 			result = pow(a_->value(), b_->value());
          break;
 		case 'n':
+         // Unary minus.
 			result = -a_->value();
          break;
    default:

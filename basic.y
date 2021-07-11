@@ -158,7 +158,6 @@ stmt:
 
 program:
 	PRINT exprList { 
-      std::cout << "basic.y DEBUG: program PRINT exprList" << std::endl;
       $$ = new Print($2); }
    | REMARK	{ 
       $$ = new Rem(std::string($1)); 
@@ -242,21 +241,16 @@ program:
 
 	| FOR IVAR EQUAL integerExpr TO integerExpr {
       $$ = new IntegerFor(
-         new IntegerExpression(
-            static_cast<int>(std::round($4->value()))),
-         new IntegerExpression(
-            static_cast<int>(std::round($6->value()))), 
-            NULL, 
-            $2); }
+         new IntegerExpression($4->value()),
+         new IntegerExpression($6->value()),
+         NULL, 
+         $2); }
 	| FOR IVAR EQUAL integerExpr TO integerExpr STEP integerExpr {
       $$ = new IntegerFor(
-         new IntegerExpression(
-            static_cast<int>(std::round($4->value()))),
-         new IntegerExpression(
-            static_cast<int>(std::round($6->value()))), 
-         new IntegerExpression(
-            static_cast<int>(std::round($8->value()))),
-            $2); }
+         new IntegerExpression($4->value()),
+         new IntegerExpression($6->value()), 
+         new IntegerExpression($8->value()),
+         $2); }
 
 	| NEXT IVAR { 
       $$ = new IntegerNext($2); }
@@ -302,8 +296,7 @@ statementList:
 ;
 
 exprList:
-	expr					{ 
-      std::cout << "basic.y DEBUG: exprList - expr" << std::endl;
+	expr { 
       $$ = new std::vector<Expression*>(1, $1); }
 	| exprList COMMA expr {
       $1->push_back($3);
@@ -311,39 +304,30 @@ exprList:
 ;
 
 expr:
-   floatExpr {
-      std::cout << "basic.y DEBUG: expr - floatExpr" << std::endl; }
-   | integerExpr {
-      std::cout << "basic.y DEBUG: expr - integerExpr" << std::endl; }
-   | stringExpr {
-      std::cout << "basic.y DEBUG: expr - stringExpr" << std::endl; }
+   floatExpr
+   | integerExpr
+   | stringExpr
 ;
 	
 floatExpr:
-	addFloatExpr {
-      std::cout << "basic.y DEBUG: floatExpr - addFloatExpr" << std::endl; }
+	addFloatExpr
 ;
 
 addFloatExpr:
-	mulFloatExpr  {
-      std::cout << "basic.y DEBUG: addFloatExpr - mulFloatExpr" << std::endl; }
+	mulFloatExpr
 	| floatExpr PLUS mulFloatExpr 	{ 
-      std::cout << "basic.y DEBUG: addFloatExpr - floatExpr PLUS mulFloatExpr " << $1->value() << " + " << $3->value() << std::endl;
       $$ = new FloatOperatorExpression($1, $3, '+'); }
 
    | floatExpr MINUS mulFloatExpr	{ 
       $$ = new FloatOperatorExpression($1, $3, '-'); }
 
    | mulFloatExpr PLUS floatExpr 	{ 
-      std::cout << "basic.y DEBUG: addFloatExpr - mulFloatExpr PLUS floatExpr " << $1->value() << " + " << $3->value() << std::endl;
       $$ = new FloatOperatorExpression($1, $3, '+'); }
 
    | mulFloatExpr MINUS floatExpr { 
-      std::cout << "basic.y DEBUG: addFloatExpr - mulFloatExpr MINUS floatExpr " << $1->value() << " - " << $3->value() << std::endl;
       $$ = new FloatOperatorExpression($1, $3, '-'); }
 
    | mulFloatExpr PLUS integerExpr 	{ 
-      std::cout << "basic.y DEBUG: addFloatExpr - mulFloatExpr PLUS integerExpr " << $1->value() << " + " << $3->value() << std::endl;
       $$ = new FloatOperatorExpression(
          $1, 
          new FloatExpression(static_cast<float>($3->value()), true), 
@@ -351,10 +335,8 @@ addFloatExpr:
 ;
 
 mulFloatExpr:
-	expFloatExpr {
-      std::cout << "basic.y DEBUG: mulFloatExpr - expFloatExpr " << $1->value() << std::endl; }
+	expFloatExpr
 	| expFloatExpr MULT expFloatExpr { 
-      std::cout << "basic.y DEBUG: mulFloatExpr - expFloatExpr MULT expFloatExpr " << $1->value() << " + " << $3->value() << std::endl;
       $$ = new FloatOperatorExpression($1, $3, '*'); }
    | expFloatExpr DIV expFloatExpr { 
       $$ = new FloatOperatorExpression($1, $3, '/'); }
@@ -363,8 +345,7 @@ mulFloatExpr:
 ;
 
 expFloatExpr:
-   floatTerm {
-      std::cout << "basic.y DEBUG: expFloatExpr - floatTerm " << $1->value() << std::endl; }
+   floatTerm
 	| floatTerm EXP floatTerm { 
       $$ = new FloatOperatorExpression($1, $3, '^'); }
 	| integerTerm EXP floatTerm { 
@@ -381,7 +362,6 @@ expFloatExpr:
 
 floatTerm:
 	FLOAT { 
-      std::cout << "basic.y DEBUG: floatTerm FLOAT = " << $1 << std::endl;
       $$ = new FloatExpression($1); }
 	| FVAR {
       $$ = new FloatVariableExpression(std::string($1));
@@ -391,16 +371,13 @@ floatTerm:
 ;
 
 integerExpr:
-	addIntegerExpr {
-      std::cout << "basic.y DEBUG: integerExpr - addIntegerExpr " << std::endl; }
+	addIntegerExpr
 ;
 
 addIntegerExpr:
-	mulIntegerExpr {
-      std::cout << "basic.y DEBUG: addIntegerExpr - mulIntegerExpr " << std::endl; }
+	mulIntegerExpr
 
 	| integerExpr PLUS mulIntegerExpr { 
-      std::cout << "basic.y DEBUG: addIntegerExpr - integerExpr PLUS mulIntegerExpr " << std::endl;
       $$ = new FloatOperatorExpression(
          new FloatExpression(static_cast<float>($1->value()), true), 
          new FloatExpression(static_cast<float>($3->value()), true), 
@@ -419,7 +396,6 @@ addIntegerExpr:
          '+'); }
 
 	| mulIntegerExpr PLUS floatExpr { 
-      std::cout << "basic.y DEBUG: addIntegerExpr - mulIntegerExpr PLUS floatExpr " << std::endl;
       $$ = new FloatOperatorExpression(
          new FloatExpression(static_cast<float>($1->value()), true), 
          $3, 
@@ -434,8 +410,7 @@ addIntegerExpr:
 ;
 
 mulIntegerExpr:
-	expIntegerExpr {
-      std::cout << "basic.y DEBUG: mulIntegerExpr - expIntegerExpr " << std::endl; }
+	expIntegerExpr
 	| expIntegerExpr MULT expIntegerExpr { 
       $$ = new FloatOperatorExpression(
          new FloatExpression(static_cast<float>($1->value()), true), 
@@ -453,8 +428,7 @@ mulIntegerExpr:
 ;
 
 expIntegerExpr:
-	integerTerm {
-      std::cout << "basic.y DEBUG: expIntegerExpr - integerTerm " << std::endl; }
+	integerTerm
 	| integerTerm EXP integerTerm { 
       $$ = new FloatOperatorExpression(
          new FloatExpression(static_cast<float>($1->value()), true), 
@@ -464,7 +438,6 @@ expIntegerExpr:
 
 integerTerm:
 	INT { 
-      std::cout << "basic.y DEBUG: integerTerm INT = " << $1 << std::endl;
       $$ = new FloatExpression(static_cast<float>($1), true); }
 	| IVAR {
       $$ = new IntegerVariableExpression(std::string($1));
