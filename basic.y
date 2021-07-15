@@ -6,6 +6,7 @@
 #include <vector>
 #include <string>
 #include <cmath>
+#include <variant>
 
 extern "C" int yylex();
 extern "C" int yyparse();
@@ -49,7 +50,7 @@ void yyerror(const char *s);
 	std::vector<Expression*> *eList;
 	std::vector<std::string> *rList;
    /* xxx - this vector needs to hold float, int, and std::string. */
-	std::vector<float> *dList;
+	std::vector<std::variant<int, float, std::string>> *dList;
    std::vector<Program*>* stmtList;
 }
 
@@ -282,8 +283,16 @@ readList:
 
 /* xxx - that vector has to hold FLOAT, INT, and STRING. */
 dataList:
-	FLOAT { $$ = new std::vector<float>(1, $1); }
+   INT { $$ = new std::vector<std::variant<int, float, std::string>>(1, $1); }
+   | FLOAT { $$ = new std::vector<std::variant<int, float, std::string>>(1, $1); }
+   | STRING { $$ = new std::vector<std::variant<int, float, std::string>>(1, $1); }
+	| dataList COMMA INT { 
+      $1->push_back($3); 
+      $$ = $1; }
 	| dataList COMMA FLOAT { 
+      $1->push_back($3); 
+      $$ = $1; }
+	| dataList COMMA STRING { 
       $1->push_back($3); 
       $$ = $1; }
 ;

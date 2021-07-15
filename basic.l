@@ -4,6 +4,7 @@
 #include <cstdio>
 #include <iostream>
 #include <vector>
+#include <variant>
 
 #define YY_DECL extern "C" int yylex()
 

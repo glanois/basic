@@ -59,8 +59,8 @@ bool Print::execute(int lineNumber, bool next) const{
 // lists the expressions, as they were originally given
 void Print::list(ostream& os) const{
 	os << "PRINT ";
-	for( int i = 0; i < exprList->size()-1; i++ ){
-		os << exprList->at(i)->list() << ", ";
+	for( int i = 0; i < exprList->size()-1; i++) {
+		os << exprList->at(i)->list() << ",";
 	}
 	os << exprList->at(exprList->size()-1)->list();
 }

@@ -23,7 +23,6 @@ void Read::list(std::ostream& os) const{
 	std::vector<std::string>::const_iterator it = vars.cbegin();
 	os << *it;		// print out first value
 	for(  ++it; it != vars.cend(); ++it ){
-		os << ", " << *it;	// print out remaining values
+		os << "," << *it;	// print out remaining values
 	}
-
 }
