@@ -49,7 +49,6 @@ void yyerror(const char *s);
 	StringExpression *sxVal;
 	std::vector<Expression*> *eList;
 	std::vector<std::string> *rList;
-   /* xxx - this vector needs to hold float, int, and std::string. */
 	std::vector<std::variant<int, float, std::string>> *dList;
    std::vector<Program*>* stmtList;
 }
@@ -96,6 +95,7 @@ void yyerror(const char *s);
 // terminal symbols
 %token <iVal> INT
 %token <sVal> STRING
+%token <sVal> DSTRING
 %token <fVal> FLOAT
 %token <sVal> FVAR
 %token <sVal> IVAR
@@ -281,11 +281,11 @@ readList:
       $$ = $1; }
 ;
 
-/* xxx - that vector has to hold FLOAT, INT, and STRING. */
 dataList:
    INT { $$ = new std::vector<std::variant<int, float, std::string>>(1, $1); }
    | FLOAT { $$ = new std::vector<std::variant<int, float, std::string>>(1, $1); }
    | STRING { $$ = new std::vector<std::variant<int, float, std::string>>(1, $1); }
+   | DSTRING { $$ = new std::vector<std::variant<int, float, std::string>>(1, $1); }
 	| dataList COMMA INT { 
       $1->push_back($3); 
       $$ = $1; }
@@ -293,6 +293,9 @@ dataList:
       $1->push_back($3); 
       $$ = $1; }
 	| dataList COMMA STRING { 
+      $1->push_back($3); 
+      $$ = $1; }
+	| dataList COMMA DSTRING { 
       $1->push_back($3); 
       $$ = $1; }
 ;

@@ -65,5 +65,6 @@ program.cpp
 read.cpp
 rem.cpp
 stringexpression.cpp
+stringutils.cpp
 variableexpression.cpp
 )
