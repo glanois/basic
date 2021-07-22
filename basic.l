@@ -8,10 +8,11 @@
 
 #define YY_DECL extern "C" int yylex()
 
-class Program;
+class DataValue;
 class Expression;
 class FloatExpression;
 class IntegerExpression;
+class Program;
 class StringExpression;
 
 #include "basic.tab.hpp"

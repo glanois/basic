@@ -49,7 +49,7 @@ void yyerror(const char *s);
 	StringExpression *sxVal;
 	std::vector<Expression*> *eList;
 	std::vector<std::string> *rList;
-	std::vector<std::variant<int, float, std::string>> *dList;
+	std::vector<DataValue> *dList;
    std::vector<Program*>* stmtList;
 }
 
@@ -282,10 +282,10 @@ readList:
 ;
 
 dataList:
-   INT { $$ = new std::vector<std::variant<int, float, std::string>>(1, $1); }
-   | FLOAT { $$ = new std::vector<std::variant<int, float, std::string>>(1, $1); }
-   | STRING { $$ = new std::vector<std::variant<int, float, std::string>>(1, $1); }
-   | DSTRING { $$ = new std::vector<std::variant<int, float, std::string>>(1, $1); }
+   INT { $$ = new std::vector<DataValue>(1, $1); }
+   | FLOAT { $$ = new std::vector<DataValue>(1, $1); }
+   | STRING { $$ = new std::vector<DataValue>(1, $1); }
+   | DSTRING { $$ = new std::vector<DataValue>(1, $1); }
 	| dataList COMMA INT { 
       $1->push_back($3); 
       $$ = $1; }

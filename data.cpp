@@ -2,7 +2,7 @@
 #include "data.h"
 #include "basic.h"
 
-Data::Data(const std::vector<std::variant<int, float, std::string>>& vals) :
+Data::Data(const std::vector<DataValue>& vals) :
    _vals(vals)
 {
 }
@@ -41,7 +41,7 @@ std::ostream& operator<<(std::ostream& os, streamer<std::variant<Ts...>> sv) {
 // list this line
 void Data::list(std::ostream& os) const{
 	os << "DATA ";
-	std::vector<std::variant<int, float, std::string>>::const_iterator it = 
+	std::vector<DataValue>::const_iterator it = 
       _vals.cbegin();
 	os << streamer{*it};		// print out first value
 	for(  ++it; it != _vals.cend(); ++it ){
@@ -50,7 +50,7 @@ void Data::list(std::ostream& os) const{
 }
 #else
 
-std::string toString(const std::variant<int, float, std::string>& val)
+std::string toString(const DataValue& val)
 {
    std::ostringstream oss;
    if (std::holds_alternative<int>(val)) {
@@ -61,7 +61,8 @@ std::string toString(const std::variant<int, float, std::string>& val)
       oss << std::get<float>(val);
    }
    else if (std::holds_alternative<std::string>(val)) {
-      // This restores the double quotes around the string.
+      // xxx - If it was a quoted string, add the double quotes.
+      // Otherwise just print it without the double quotes.
       oss << "\"" << std::get<std::string>(val) << "\"";
    }
    return oss.str();
@@ -71,7 +72,7 @@ std::string toString(const std::variant<int, float, std::string>& val)
 void Data::list(std::ostream& os) const
 {
    os << "DATA ";
-   std::vector<std::variant<int, float, std::string>>::const_iterator it = _vals.cbegin();
+   std::vector<DataValue>::const_iterator it = _vals.cbegin();
    os << toString(*it); // print out first value
    for (++it; it != _vals.cend(); ++it) {
       os << "," << toString(*it);	// print out remaining values

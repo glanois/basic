@@ -68,7 +68,7 @@ Basic *Basic::instance(){
 }
 
 // assign a value to a variable
-void Basic::assign(const std::string& var, const std::variant<int, float, std::string>& value) {
+void Basic::assign(const std::string& var, const DataValue& value) {
    // xxx - compare the type inherent in the name of var with what the variant holds
    // to ensure the types match.
    if (std::holds_alternative<int>(value)) {
@@ -241,8 +241,8 @@ void Basic::read(std::string var){
 }
 
 // push more values onto data vector
-void Basic::pushData(const std::vector<std::variant<int, float, std::string>>& vals) {
-   for (std::vector<std::variant<int, float, std::string>>::const_iterator it = vals.begin(); it != vals.end(); ++it ) {
+void Basic::pushData(const std::vector<DataValue>& vals) {
+   for (std::vector<DataValue>::const_iterator it = vals.begin(); it != vals.end(); ++it ) {
 		data.push_back(*it);
 	}
 }
