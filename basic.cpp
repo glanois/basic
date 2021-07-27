@@ -71,14 +71,14 @@ Basic *Basic::instance(){
 void Basic::assign(const std::string& var, const DataValue& value) {
    // xxx - compare the type inherent in the name of var with what the variant holds
    // to ensure the types match.
-   if (std::holds_alternative<int>(value)) {
-      integerVars[var] = std::get<int>(value);
+   if (std::holds_alternative<IntValue>(value)) {
+      integerVars[var] = std::get<IntValue>(value);
    }
-   else if (std::holds_alternative<float>(value)) {
-      floatVars[var] = std::get<float>(value);
+   else if (std::holds_alternative<FloatValue>(value)) {
+      floatVars[var] = std::get<FloatValue>(value);
    }
-   else if (std::holds_alternative<std::string>(value)) {
-      stringVars[var] = std::get<std::string>(value);
+   else if (std::holds_alternative<StringValue>(value)) {
+      stringVars[var] = std::get<StringValue>(value);
    }
 }
 

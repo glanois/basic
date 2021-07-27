@@ -7,7 +7,6 @@
 #include <vector>
 #include <deque>
 #include <stack>
-#include <variant>
 
 #include "program.h"
 #include "data.h"

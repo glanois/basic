@@ -40,7 +40,7 @@ void yyerror(const char *s);
 
 // token type definition
 %union {
-	int iVal;
+	short iVal;
 	float fVal;
    char* sVal;
 	Program *progVal;
@@ -284,19 +284,19 @@ readList:
 dataList:
    INT { $$ = new std::vector<DataValue>(1, $1); }
    | FLOAT { $$ = new std::vector<DataValue>(1, $1); }
-   | STRING { $$ = new std::vector<DataValue>(1, $1); }
-   | DSTRING { $$ = new std::vector<DataValue>(1, $1); }
+   | STRING { $$ = new std::vector<DataValue>(1, StringValue($1)); }
+   | DSTRING { $$ = new std::vector<DataValue>(1, StringValue($1, false)); }
 	| dataList COMMA INT { 
       $1->push_back($3); 
       $$ = $1; }
 	| dataList COMMA FLOAT { 
       $1->push_back($3); 
       $$ = $1; }
-	| dataList COMMA STRING { 
-      $1->push_back($3); 
+   | dataList COMMA STRING { // quoted string
+      $1->push_back(StringValue($3)); 
       $$ = $1; }
-	| dataList COMMA DSTRING { 
-      $1->push_back($3); 
+   | dataList COMMA DSTRING { // unquoted string
+      $1->push_back(StringValue($3, false)); 
       $$ = $1; }
 ;
 

@@ -6,7 +6,21 @@
 
 #include "program.h"
 
-typedef std::variant<int, float, std::string> DataValue;
+typedef short IntValue;
+typedef float FloatValue;
+class StringValue : public std::string
+{
+public:
+   StringValue();
+   StringValue(const bool hasQuotes);
+   StringValue(const char*);
+   StringValue(const char*, const bool hasQuotes);
+   bool getHasQuotes() const;
+protected:
+   bool m_hasQuotes;
+};
+
+typedef std::variant<IntValue, FloatValue, StringValue> DataValue;
 
 /*
 This class implements the DATA statement, storing values

@@ -25,7 +25,6 @@ ALPHA    [A-Z]
 DIGIT    [0-9]
 
 %x INDATA
-%x INDSTRING
 
 %%
 

@@ -2,6 +2,29 @@
 #include "data.h"
 #include "basic.h"
 
+StringValue::StringValue() : m_hasQuotes(true)
+{
+}
+
+StringValue::StringValue(const bool hasQuotes) : m_hasQuotes(hasQuotes)
+{
+}
+
+StringValue::StringValue(const char* s) : m_hasQuotes(true), std::string(s)
+{
+}
+
+StringValue::StringValue(
+   const char*s,
+   const bool hasQuotes) : m_hasQuotes(hasQuotes), std::string(s)
+{
+}
+
+bool StringValue::getHasQuotes() const
+{
+   return m_hasQuotes;
+}
+
 Data::Data(const std::vector<DataValue>& vals) :
    _vals(vals)
 {
@@ -53,17 +76,23 @@ void Data::list(std::ostream& os) const{
 std::string toString(const DataValue& val)
 {
    std::ostringstream oss;
-   if (std::holds_alternative<int>(val)) {
-      oss << std::get<int>(val);
+   if (std::holds_alternative<IntValue>(val)) {
+      oss << std::get<IntValue>(val);
    }
-   else if (std::holds_alternative<float>(val)) {
+   else if (std::holds_alternative<FloatValue>(val)) {
       // xxx - guarantee floats have a trailing .0 if needed.
-      oss << std::get<float>(val);
+      oss << std::get<FloatValue>(val);
    }
-   else if (std::holds_alternative<std::string>(val)) {
-      // xxx - If it was a quoted string, add the double quotes.
+   else if (std::holds_alternative<StringValue>(val)) {
+      // If it was a quoted string, add the double quotes.
       // Otherwise just print it without the double quotes.
-      oss << "\"" << std::get<std::string>(val) << "\"";
+      auto v = std::get<StringValue>(val);
+      if (v.getHasQuotes()) {
+         oss << "\"" << v << "\"";
+      }
+      else {
+         oss << v;
+      }
    }
    return oss.str();
 }
