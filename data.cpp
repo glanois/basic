@@ -1,29 +1,7 @@
 #include <sstream>
+
 #include "data.h"
 #include "basic.h"
-
-StringValue::StringValue() : m_hasQuotes(true)
-{
-}
-
-StringValue::StringValue(const bool hasQuotes) : m_hasQuotes(hasQuotes)
-{
-}
-
-StringValue::StringValue(const char* s) : m_hasQuotes(true), std::string(s)
-{
-}
-
-StringValue::StringValue(
-   const char*s,
-   const bool hasQuotes) : m_hasQuotes(hasQuotes), std::string(s)
-{
-}
-
-bool StringValue::getHasQuotes() const
-{
-   return m_hasQuotes;
-}
 
 Data::Data(const std::vector<DataValue>& vals) :
    _vals(vals)

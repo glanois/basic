@@ -4,44 +4,58 @@
 #include "basic.h"
 
 // create a new statement instance
-FloatIfThen::FloatIfThen(FloatExpression *a, FloatExpression *b, char *op, int line){
-	this->a = a;
-	this->b = b;
-	this->op = op;
-	this->line = line;
+FloatIfThen::FloatIfThen(
+   FloatExpression* a, 
+   FloatExpression* b, 
+   const std::string& op, 
+   int line) : 
+   m_a(a),
+   m_b(b),
+   m_op(op),
+   m_line(line)
+{
 }
 
 // clean up the expression pointers
-FloatIfThen::~FloatIfThen(){
-	delete a;
-	delete b;
+FloatIfThen::~FloatIfThen()
+{
+   delete m_a;
+   delete m_b;
 }
 
 // run this line of the program
-bool FloatIfThen::execute(int /* lineNumber */, bool next) const{
-	float aVal = a->value();
-	float bVal = b->value();
-	bool result = false;
-	
-	if( strcmp(op, "=") == 0 )
-		result = aVal == bVal;
-	else if( strcmp(op, "<") == 0 )
-		result = aVal < bVal;
-	else if( strcmp(op, ">") == 0 )
-		result = aVal > bVal;
-	else if( strcmp(op, "<=") == 0 )
-		result = aVal <= bVal;
-	else if( strcmp(op, ">=") == 0 )
-		result = aVal >= bVal;
-	else if( strcmp(op, "<>") == 0 )
-		result = aVal != bVal;
-	
-	if( result )
-		Basic::instance()->gotoLine(line);
-	else
-   {
-      if (next)
-      {
+bool FloatIfThen::execute(
+   int /* lineNumber */, 
+   bool next) const
+{
+   float aVal = m_a->value();
+   float bVal = m_b->value();
+   bool result = false;
+   
+   if (m_op.compare("=") == 0) {
+      result = aVal == bVal;
+   }
+   else if (m_op.compare("<") == 0) {
+      result = aVal < bVal;
+   }
+   else if (m_op.compare(">") == 0) {
+      result = aVal > bVal;
+   }
+   else if (m_op.compare("<=") == 0) {
+      result = aVal <= bVal;
+   }
+   else if (m_op.compare(">=") == 0) {
+      result = aVal >= bVal;
+   }
+   else if (m_op.compare("<>") == 0) {
+      result = aVal != bVal;
+   }
+   
+   if (result) {
+      Basic::instance()->gotoLine(m_line);
+   }
+   else {
+      if (next) {
          Basic::instance()->nextLine();
       }
    }
@@ -54,51 +68,67 @@ bool FloatIfThen::execute(int /* lineNumber */, bool next) const{
 }
 
 // list this line
-void FloatIfThen::list(std::ostream& os) const{
-	os << "IF " << a->list() << ' ' << op << ' ';
-	os << b->list() << " THEN " << line;
+void FloatIfThen::list(std::ostream& os) const
+{
+   os << "IF " << m_a->list() << ' ' << m_op << ' ';
+   os << m_b->list() << " THEN " << m_line;
 }
 
 
 // create a new statement instance
-IntegerIfThen::IntegerIfThen(IntegerExpression *a, IntegerExpression *b, char *op, int line){
-	this->a = a;
-	this->b = b;
-	this->op = op;
-	this->line = line;
+IntegerIfThen::IntegerIfThen(
+   IntegerExpression* a, 
+   IntegerExpression* b, 
+   const std::string&  op, 
+   int line) :
+   m_a(a),
+   m_b(b),
+   m_op(op),
+   m_line(line)
+{
 }
 
 // clean up the expression pointers
-IntegerIfThen::~IntegerIfThen(){
-	delete a;
-	delete b;
+IntegerIfThen::~IntegerIfThen()
+{
+   delete m_a;
+   delete m_b;
 }
 
 // run this line of the program
-bool IntegerIfThen::execute(int /* lineNumber */, bool next) const{
-	int aVal = a->value();
-	int bVal = b->value();
-	bool result = false;
-	
-	if( strcmp(op, "=") == 0 )
-		result = aVal == bVal;
-	else if( strcmp(op, "<") == 0 )
-		result = aVal < bVal;
-	else if( strcmp(op, ">") == 0 )
-		result = aVal > bVal;
-	else if( strcmp(op, "<=") == 0 )
-		result = aVal <= bVal;
-	else if( strcmp(op, ">=") == 0 )
-		result = aVal >= bVal;
-	else if( strcmp(op, "<>") == 0 )
-		result = aVal != bVal;
-	
-	if( result )
-		Basic::instance()->gotoLine(line);
-	else
+bool IntegerIfThen::execute(
+   int /* lineNumber */, 
+   bool next) const
+{
+   int aVal = m_a->value();
+   int bVal = m_b->value();
+   bool result = false;
+   
+   if (m_op.compare("=") == 0) {
+      result = aVal == bVal;
+   }
+   else if (m_op.compare("<") == 0) {
+      result = aVal < bVal;
+   }
+   else if (m_op.compare(">") == 0) {
+      result = aVal > bVal;
+   }
+   else if (m_op.compare("<=") == 0) {
+      result = aVal <= bVal;
+   }
+   else if (m_op.compare(">=") == 0) {
+      result = aVal >= bVal;
+   }
+   else if (m_op.compare("<>") == 0) {
+      result = aVal != bVal;
+   }
+   
+   if (result) {
+      Basic::instance()->gotoLine(m_line);
+   }
+   else
    {
-      if (next)
-      {
+      if (next) {
          Basic::instance()->nextLine();
       }
    }
@@ -111,51 +141,67 @@ bool IntegerIfThen::execute(int /* lineNumber */, bool next) const{
 }
 
 // list this line
-void IntegerIfThen::list(std::ostream& os) const{
-	os << "IF " << a->list() << ' ' << op << ' ';
-	os << b->list() << " THEN " << line;
+void IntegerIfThen::list(std::ostream& os) const
+{
+   os << "IF " << m_a->list() << ' ' << m_op << ' ';
+   os << m_b->list() << " THEN " << m_line;
 }
 
 
 // create a new statement instance
-StringIfThen::StringIfThen(StringExpression *a, StringExpression *b, char *op, int line){
-	this->a = a;
-	this->b = b;
-	this->op = op;
-	this->line = line;
+StringIfThen::StringIfThen(
+   StringExpression* a, 
+   StringExpression* b, 
+   const std::string& op, 
+   int line) :
+   m_a(a),
+   m_b(b),
+   m_op(op),
+   m_line(line)
+{
 }
 
 // clean up the expression pointers
-StringIfThen::~StringIfThen(){
-	delete a;
-	delete b;
+StringIfThen::~StringIfThen()
+{
+   delete m_a;
+   delete m_b;
 }
 
 // run this line of the program
-bool StringIfThen::execute(int /* lineNumber */, bool next) const{
-   std::string aVal = a->value();
-   std::string bVal = b->value();
-	bool result = false;
-	
-	if( strcmp(op, "=") == 0 )
-		result = aVal == bVal;
-	else if( strcmp(op, "<") == 0 )
-		result = aVal < bVal;
-	else if( strcmp(op, ">") == 0 )
-		result = aVal > bVal;
-	else if( strcmp(op, "<=") == 0 )
-		result = aVal <= bVal;
-	else if( strcmp(op, ">=") == 0 )
-		result = aVal >= bVal;
-	else if( strcmp(op, "<>") == 0 )
-		result = aVal != bVal;
-	
-	if( result )
-		Basic::instance()->gotoLine(line);
-	else
+bool StringIfThen::execute(
+   int /* lineNumber */, 
+   bool next) const
+{
+   std::string aVal = m_a->value();
+   std::string bVal = m_b->value();
+   bool result = false;
+   
+   if (m_op.compare("=") == 0) {
+      result = aVal == bVal;
+   }
+   else if (m_op.compare("<") == 0) {
+      result = aVal < bVal;
+   }
+   else if (m_op.compare(">") == 0) {
+      result = aVal > bVal;
+   }
+   else if (m_op.compare("<=") == 0) {
+      result = aVal <= bVal;
+   }
+   else if (m_op.compare(">=") == 0) {
+      result = aVal >= bVal;
+   }
+   else if (m_op.compare("<>") == 0) {
+      result = aVal != bVal;
+   }
+   
+   if (result) {
+      Basic::instance()->gotoLine(m_line);
+   }
+   else
    {
-      if (next)
-      {
+      if (next) {
          Basic::instance()->nextLine();
       }
    }
@@ -168,7 +214,8 @@ bool StringIfThen::execute(int /* lineNumber */, bool next) const{
 }
 
 // list this line
-void StringIfThen::list(std::ostream& os) const{
-	os << "IF " << a->list() << ' ' << op << ' ';
-	os << b->list() << " THEN " << line;
+void StringIfThen::list(std::ostream& os) const
+{
+   os << "IF " << m_a->list() << ' ' << m_op << ' ';
+   os << m_b->list() << " THEN " << m_line;
 }

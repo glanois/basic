@@ -8,16 +8,16 @@
 
 #define YY_DECL extern "C" int yylex()
 
-class DataValue;
 class Expression;
 class FloatExpression;
 class IntegerExpression;
 class Program;
 class StringExpression;
 
-#include "basic.tab.hpp"
-
+#include "types.h"
 #include "stringutils.h"
+
+#include "basic.tab.hpp"
 
 %}
 
@@ -37,7 +37,7 @@ DIGIT    [0-9]
    return FLOAT; }
 \"[^\"\n]*\" { // Quoted string literal
    // remove the quote marks from either end
-   yylval.sVal = strndup(yytext+1, strlen(yytext)-2);
+   yylval.sVal = new StringValue(std::string(yytext+1, strlen(yytext)-2));
 	return STRING; }
 
    /* DATA statements allow int, float, quoted strings, and unquoted strings.
@@ -55,16 +55,14 @@ DIGIT    [0-9]
    yylval.fVal = atof(yytext); 
    return FLOAT; }
 <INDATA>[ \t]*\"[^\"\n]*\"[ \t]* { // Quoted string literal
-   std::string s(yytext);
-   StringUtils::trim(s, " \t");
+   yylval.sVal = new StringValue(yytext);
+   StringUtils::trim(*yylval.sVal, " \t");
    // remove the quote marks from either end
-   StringUtils::trim(s, "\"");
-   yylval.sVal = strdup(s.c_str());
+   StringUtils::trim(*yylval.sVal, "\"");
 	return STRING; }
 <INDATA>[^,:\n]+ { // Unquoted literal string in DATA statement. (Space is allowed, before, during, and after.)
-   std::string s(yytext);
-   StringUtils::trim(s, " \t");
-   yylval.sVal = strdup(s.c_str());
+   yylval.sVal = new StringValue(yytext);
+   StringUtils::trim(*yylval.sVal, " \t");
 	return DSTRING; }
 <INDATA>, { 
    return COMMA; }
@@ -77,7 +75,9 @@ DIGIT    [0-9]
    unput(*yytext); }
 
 PRINT  { return PRINT; }
-REM.*  { yylval.sVal = strndup(yytext, 512); return REMARK; }
+REM.*  { 
+   yylval.sVal = new StringValue(std::string(yytext, 512));
+   return REMARK; }
 RUN    { return RUN; }
 LIST   { return LIST; }
 ,      { return COMMA; }
@@ -87,9 +87,15 @@ LIST   { return LIST; }
       std::cout << ">";
    }
    return ENDL; }
-{ALPHA}{DIGIT}?   { yylval.sVal = strdup(yytext); return FVAR; }
-{ALPHA}{DIGIT}?\% { yylval.sVal = strdup(yytext); return IVAR; }
-{ALPHA}{DIGIT}?\$ { yylval.sVal = strdup(yytext); return SVAR; }
+{ALPHA}{DIGIT}?   {
+   yylval.sVal = new StringValue(yytext);
+   return FVAR; }
+{ALPHA}{DIGIT}?\% { 
+   yylval.sVal = new StringValue(yytext);
+   return IVAR; }
+{ALPHA}{DIGIT}?\$ { 
+   yylval.sVal = new StringValue(yytext);
+   return SVAR; }
 \+ { return PLUS; }
 -  { return MINUS; }
 \* { return MULT; }

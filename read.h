@@ -5,6 +5,7 @@
 #include <string>
 
 #include "program.h"
+#include "types.h"
 
 /*
 This class supports the READ statement, putting pre-stored DATA
@@ -12,13 +13,13 @@ into specified variables.
 */
 class Read : public Program {
 public:
-	Read(std::vector<std::string> vars);
-	
-	bool execute(int lineNumber, bool next) const;				// run this line of the program
-	void list(std::ostream& os) const;	// list this line
+   Read(const std::vector<StringValue>& vars);
+   
+   bool execute(int lineNumber, bool next) const;            // run this line of the program
+   void list(std::ostream& os) const;   // list this line
 
 private:
-	std::vector<std::string> vars;		// variables names to receive values
+   std::vector<StringValue> m_vars;   	// variables names to receive values
 };
 
 #endif

@@ -40,16 +40,16 @@ void yyerror(const char *s);
 
 // token type definition
 %union {
-	short iVal;
-	float fVal;
-   char* sVal;
-	Program *progVal;
-	Expression *eVal;
-   FloatExpression *fxVal;
-	StringExpression *sxVal;
-	std::vector<Expression*> *eList;
-	std::vector<std::string> *rList;
-	std::vector<DataValue> *dList;
+   IntValue iVal;
+   FloatValue fVal;
+   StringValue* sVal;
+   Program* progVal;
+   Expression* eVal;
+   FloatExpression* fxVal;
+   StringExpression* sxVal;
+   std::vector<Expression*>* eList;
+   std::vector<StringValue>* rList;
+   std::vector<DataValue>* dList;
    std::vector<Program*>* stmtList;
 }
 
@@ -127,108 +127,108 @@ void yyerror(const char *s);
 %% /* Grammar rules and actions follow */
 
 input:
-	/* empty */
-	| input line
+   /* empty */
+   | input line
 ;
 
 line:
-	ENDL
-	| stmt ENDL
+   ENDL
+   | stmt ENDL
 ;
 
 stmt:
-	INT { Basic::instance()->remove($1); }
-	| INT statementList {
+   INT { Basic::instance()->remove($1); }
+   | INT statementList {
       MultiProgram* mp = new MultiProgram();
       std::vector<Program*>::iterator i;
       for (i = $2->begin(); i != $2->end(); ++i) {
          mp->add((*i));
       }
       Basic::instance()->add($1, mp); }
-	| INT program { Basic::instance()->add($1, $2); }
-	| RUN         { Basic::instance()->execute(); }
-	| LIST        { Basic::instance()->list(std::cout); }
-	| NEW         { Basic::instance()->newProgram(); }
-	| OLD         { Basic::instance()->oldProgram(); }
-	| SAVE        { Basic::instance()->saveProgram(); }
-	| UNSAVE      { Basic::instance()->unsaveProgram(); }
-	| CATALOG     { Basic::instance()->catalogPrograms(); }
-	| SCRATCH     { Basic::instance()->erase(); }
-	| RENAME      { Basic::instance()->renameProgram(); }
+   | INT program { Basic::instance()->add($1, $2); }
+   | RUN         { Basic::instance()->execute(); }
+   | LIST        { Basic::instance()->list(std::cout); }
+   | NEW         { Basic::instance()->newProgram(); }
+   | OLD         { Basic::instance()->oldProgram(); }
+   | SAVE        { Basic::instance()->saveProgram(); }
+   | UNSAVE      { Basic::instance()->unsaveProgram(); }
+   | CATALOG     { Basic::instance()->catalogPrograms(); }
+   | SCRATCH     { Basic::instance()->erase(); }
+   | RENAME      { Basic::instance()->renameProgram(); }
 ;
 
 program:
-	PRINT exprList { 
+   PRINT exprList { 
       $$ = new Print($2); }
-   | REMARK	{ 
-      $$ = new Rem(std::string($1)); 
-      free($1);	// malloced in basic.l
+   | REMARK   { 
+      $$ = new Rem(*($1)); 
+      delete $1; // new()-ed in basic.l
      }
-   | LET FVAR EQUAL floatExpr	{
-      $$ = new FloatLet(std::string($2), $4);
-      free($2);	// malloced in basic.l
+   | LET FVAR EQUAL floatExpr   {
+      $$ = new FloatLet(*($2), $4);
+      delete $2; // new()-ed in basic.l
    }
-   | LET FVAR EQUAL integerExpr	{
+   | LET FVAR EQUAL integerExpr   {
       $$ = new FloatLet(
-         std::string($2), 
+         *($2), 
          new FloatExpression(static_cast<float>($4->value())));
-      free($2);	// malloced in basic.l
+      delete $2; // new()-ed in basic.l
    }
-	| LET IVAR EQUAL integerExpr	{
-      $$ = new IntegerLet(std::string($2), $4);
-      free($2);	// malloced in basic.l
+   | LET IVAR EQUAL integerExpr   {
+      $$ = new IntegerLet(*($2), $4);
+      delete $2; // new()-ed in basic.l
    }
-	| LET IVAR EQUAL floatExpr	{
+   | LET IVAR EQUAL floatExpr   {
       $$ = new IntegerLet(
-         std::string($2), 
+         *($2), 
          /* xxx - round() or trunc()? */
          new FloatExpression(static_cast<int>(std::round($4->value())), true));
-      free($2);	// malloced in basic.l
+      delete $2; // new()-ed in basic.l
    }
-   | LET SVAR EQUAL stringExpr	{
-      $$ = new StringLet(std::string($2), $4);
-      free($2);	// malloced in basic.l
+   | LET SVAR EQUAL stringExpr   {
+      $$ = new StringLet(*($2), $4);
+      delete $2; // new()-ed in basic.l
    }
-	| GOTO INT { $$ = new Goto($2); }
-	| END { $$ = new End(); }
-	| IF floatExpr comp floatExpr THEN INT { 
-      $$ = new FloatIfThen($2, $4, $3, $6); }
+   | GOTO INT { $$ = new Goto($2); }
+   | END { $$ = new End(); }
+   | IF floatExpr comp floatExpr THEN INT { 
+      $$ = new FloatIfThen($2, $4, *($3), $6); }
    | IF integerExpr comp floatExpr  THEN INT { 
       $$ = new FloatIfThen(
          new FloatExpression(static_cast<float>($2->value()), true), 
          $4, 
-         $3, 
+         *($3), 
          $6); }
    | IF floatExpr comp integerExpr  THEN INT { 
       $$ = new FloatIfThen(
          $2, 
          new FloatExpression(static_cast<float>($4->value()), true), 
-         $3, 
+         *($3), 
          $6); }
    | IF integerExpr comp integerExpr THEN INT { 
       $$ = new FloatIfThen(
          new FloatExpression(static_cast<float>($2->value()), true), 
          new FloatExpression(static_cast<float>($4->value()), true), 
-         $3, 
+         *($3), 
          $6); }
    | IF stringExpr comp stringExpr THEN INT { 
-      $$ = new StringIfThen($2, $4, $3, $6); }
-	| DATA dataList { $$ = new Data(*$2); }
-	| READ readList { $$ = new Read(*$2); }
+      $$ = new StringIfThen($2, $4, *($3), $6); }
+   | DATA dataList { $$ = new Data(*($2)); }
+   | READ readList { $$ = new Read(*($2)); }
 
-	| FOR FVAR EQUAL floatExpr TO floatExpr {
-      $$ = new FloatFor($4, $6, NULL, $2); }
-	| FOR FVAR EQUAL floatExpr TO floatExpr STEP floatExpr {
-      $$ = new FloatFor($4, $6, $8, $2); }
-	| FOR FVAR EQUAL integerExpr TO integerExpr {
+   | FOR FVAR EQUAL floatExpr TO floatExpr {
+      $$ = new FloatFor($4, $6, NULL, *($2)); }
+   | FOR FVAR EQUAL floatExpr TO floatExpr STEP floatExpr {
+      $$ = new FloatFor($4, $6, $8, *($2)); }
+   | FOR FVAR EQUAL integerExpr TO integerExpr {
       $$ = new FloatFor(
          new FloatExpression(
             static_cast<float>($4->value()), true),
          new FloatExpression(
             static_cast<float>($6->value()), true),
-            NULL, 
-            $2); }
-	| FOR FVAR EQUAL integerExpr TO integerExpr STEP integerExpr {
+         NULL, 
+         *($2)); }
+   | FOR FVAR EQUAL integerExpr TO integerExpr STEP integerExpr {
       $$ = new FloatFor(
          new FloatExpression(
             static_cast<float>($4->value()), true),
@@ -236,73 +236,73 @@ program:
             static_cast<float>($6->value()), true),
          new FloatExpression(
             static_cast<float>($8->value()), true),
-            $2); }
-	| NEXT FVAR {
-      $$ = new FloatNext($2); }
+         *($2)); }
+   | NEXT FVAR {
+      $$ = new FloatNext(*($2)); }
 
-	| FOR IVAR EQUAL integerExpr TO integerExpr {
+   | FOR IVAR EQUAL integerExpr TO integerExpr {
       $$ = new IntegerFor(
          new IntegerExpression($4->value()),
          new IntegerExpression($6->value()),
          NULL, 
-         $2); }
-	| FOR IVAR EQUAL integerExpr TO integerExpr STEP integerExpr {
+         *($2)); }
+   | FOR IVAR EQUAL integerExpr TO integerExpr STEP integerExpr {
       $$ = new IntegerFor(
          new IntegerExpression($4->value()),
          new IntegerExpression($6->value()), 
          new IntegerExpression($8->value()),
-         $2); }
+         *($2)); }
 
-	| NEXT IVAR { 
-      $$ = new IntegerNext($2); }
+   | NEXT IVAR { 
+      $$ = new IntegerNext(*($2)); }
 ;
 
 comp:
-   EQUAL					{ $$ = "="; }
-	| LESS					{ $$ = "<"; }
-	| GREATER				{ $$ = ">"; }
-	| LESSEQUAL				{ $$ = "<="; }
-	| GREATEREQUAL			{ $$ = ">="; }
-	| NOTEQUAL				{ $$ = "<>"; }
+   EQUAL          { $$ = new StringValue("=", false); }
+   | LESS         { $$ = new StringValue("<", false); }
+   | GREATER      { $$ = new StringValue(">", false); }
+   | LESSEQUAL    { $$ = new StringValue("<=", false); }
+   | GREATEREQUAL { $$ = new StringValue(">=", false); }
+   | NOTEQUAL     { $$ = new StringValue("<>", false); }
 ;
 
 readList:
-	FVAR	 { $$ = new std::vector<std::string>(1, $1); }
-	| IVAR { $$ = new std::vector<std::string>(1, $1); }
-	| SVAR { $$ = new std::vector<std::string>(1, $1); }
-	| readList COMMA FVAR {
-      $1->push_back($3);
+   FVAR    { $$ = new std::vector<StringValue>(1, *($1)); }
+   | IVAR { $$ = new std::vector<StringValue>(1, *($1)); }
+   | SVAR { $$ = new std::vector<StringValue>(1, *($1)); }
+   | readList COMMA FVAR {
+      $1->push_back(*($3));
       $$ = $1; }
-	| readList COMMA IVAR {
-      $1->push_back($3);
+   | readList COMMA IVAR {
+      $1->push_back(*($3));
       $$ = $1; }
-	| readList COMMA SVAR {
-      $1->push_back($3);
+   | readList COMMA SVAR {
+      $1->push_back(*($3));
       $$ = $1; }
 ;
 
 dataList:
    INT { $$ = new std::vector<DataValue>(1, $1); }
    | FLOAT { $$ = new std::vector<DataValue>(1, $1); }
-   | STRING { $$ = new std::vector<DataValue>(1, StringValue($1)); }
-   | DSTRING { $$ = new std::vector<DataValue>(1, StringValue($1, false)); }
-	| dataList COMMA INT { 
+   | STRING { $$ = new std::vector<DataValue>(1, StringValue(*($1))); }
+   | DSTRING { $$ = new std::vector<DataValue>(1, StringValue($1->c_str(), false)); }
+   | dataList COMMA INT { 
       $1->push_back($3); 
       $$ = $1; }
-	| dataList COMMA FLOAT { 
+   | dataList COMMA FLOAT { 
       $1->push_back($3); 
       $$ = $1; }
    | dataList COMMA STRING { // quoted string
-      $1->push_back(StringValue($3)); 
+      $1->push_back(StringValue(*($3))); 
       $$ = $1; }
    | dataList COMMA DSTRING { // unquoted string
-      $1->push_back(StringValue($3, false)); 
+      $1->push_back(StringValue($3->c_str(), false)); 
       $$ = $1; }
 ;
 
 statementList:
-	program { $$ = new std::vector<Program*>(1, $1); }
-	| statementList COLON program	{ 
+   program { $$ = new std::vector<Program*>(1, $1); }
+   | statementList COLON program	{ 
       $1->push_back($3);
       $$ = $1; }
 ;
@@ -376,8 +376,8 @@ floatTerm:
 	FLOAT { 
       $$ = new FloatExpression($1); }
 	| FVAR {
-      $$ = new FloatVariableExpression(std::string($1));
-      free($1); }
+      $$ = new FloatVariableExpression(*($1));
+      delete $1; }
 	| OPENPAREN addFloatExpr CLOSEPAREN	{ 
       $$ = new FloatParenExpression($2); }
 ;
@@ -452,8 +452,8 @@ integerTerm:
 	INT { 
       $$ = new FloatExpression(static_cast<float>($1), true); }
 	| IVAR {
-      $$ = new IntegerVariableExpression(std::string($1));
-      free($1); }
+      $$ = new IntegerVariableExpression(*($1));
+      delete $1; }
    | OPENPAREN addIntegerExpr CLOSEPAREN { 
       $$ = new FloatParenExpression(new FloatExpression(static_cast<float>($2->value()), true)); }
 ;
@@ -469,12 +469,12 @@ addStringExpr:
 
 stringTerm:
 	STRING { 
-      $$ = new StringExpression(std::string($1)); 
-      free($1);	// malloced in basic.l
+      $$ = new StringExpression(*($1)); 
+      delete $1; // new()-ed in basic.l
    }
    | SVAR { 
-      $$ = new StringVariableExpression($1); 
-      free($1); 	// malloced in basic.l
+      $$ = new StringVariableExpression(*($1)); 
+      delete $1; // new()-ed in basic.l
    }
    | OPENPAREN addStringExpr CLOSEPAREN { $$ = new StringParenExpression($2); }
 ;

@@ -2,29 +2,14 @@
 #define _DATA_H_
 
 #include <vector>
-#include <variant>
 
 #include "program.h"
+#include "types.h"
 
-typedef short IntValue;
-typedef float FloatValue;
-class StringValue : public std::string
-{
-public:
-   StringValue();
-   StringValue(const bool hasQuotes);
-   StringValue(const char*);
-   StringValue(const char*, const bool hasQuotes);
-   bool getHasQuotes() const;
-protected:
-   bool m_hasQuotes;
-};
 
-typedef std::variant<IntValue, FloatValue, StringValue> DataValue;
-
-/*
-This class implements the DATA statement, storing values
-for later use by READ.
+/**
+  This class implements the DATA statement, storing values
+  for later use by READ.
 */
 class Data : public Program {
 public:
