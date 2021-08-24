@@ -242,7 +242,7 @@ void Basic::read(std::string var){
 
 // push more values onto data vector
 void Basic::pushData(const std::vector<DataValue>& vals) {
-   for (std::vector<DataValue>::const_iterator it = vals.begin(); it != vals.end(); ++it ) {
+   for (std::vector<DataValue>::const_iterator it = vals.cbegin(); it != vals.cend(); ++it ) {
 		data.push_back(*it);
 	}
 }
