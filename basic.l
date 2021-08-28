@@ -76,7 +76,7 @@ DIGIT    [0-9]
 
 PRINT  { return PRINT; }
 REM.*  { 
-   yylval.sVal = new StringValue(std::string(yytext, 512));
+   yylval.sVal = new StringValue(yytext);
    return REMARK; }
 RUN    { return RUN; }
 LIST   { return LIST; }
