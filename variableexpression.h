@@ -23,13 +23,13 @@ private:
 	std::string name_;
 };
 
-class IntegerVariableExpression : public FloatExpression {
+class IntegerVariableExpression : public IntegerExpression {
 public:
 	IntegerVariableExpression(const std::string& name);
 
 	std::string print() const;		// return the stored value
 	std::string list() const;			// printable version
-	float value() const;					// numerical evaluation
+	IntValue value() const;					// numerical evaluation
 
 private:
 	std::string name_;

@@ -30,7 +30,7 @@ public:
 
 	std::string print() const;		// return a printable value
 	std::string list() const;			// print a listing version
-	int value() const;					// numerical evaluation
+	IntValue value() const;					// numerical evaluation
 
 private:
 	IntegerExpression* exp_;

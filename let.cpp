@@ -34,7 +34,7 @@ void FloatLet::list(std::ostream& os) const
 
 IntegerLet::IntegerLet(
    const std::string& var, 
-   const FloatExpression* expression) :
+   const IntegerExpression* expression) :
    var_(var),
    expression_(expression)
 {

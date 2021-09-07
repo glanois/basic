@@ -45,6 +45,7 @@ void yyerror(const char *s);
    StringValue* sVal;
    Program* progVal;
    Expression* eVal;
+   IntegerExpression* ixVal;
    FloatExpression* fxVal;
    StringExpression* sxVal;
    std::vector<Expression*>* eList;
@@ -106,16 +107,16 @@ void yyerror(const char *s);
 %type <progVal> program 
 %type <eList> exprList
 %type <eVal> expr
+%type <ixVal> integerExpr
+%type <ixVal> addIntegerExpr
+%type <ixVal> mulIntegerExpr
+%type <ixVal> expIntegerExpr
+%type <ixVal> integerTerm
 %type <fxVal> floatExpr
 %type <fxVal> addFloatExpr
 %type <fxVal> mulFloatExpr
 %type <fxVal> expFloatExpr
 %type <fxVal> floatTerm
-%type <fxVal> integerExpr
-%type <fxVal> addIntegerExpr
-%type <fxVal> mulIntegerExpr
-%type <fxVal> expIntegerExpr
-%type <fxVal> integerTerm
 %type <sxVal> stringExpr
 %type <sxVal> addStringExpr
 %type <sxVal> stringTerm
@@ -182,7 +183,7 @@ program:
       $$ = new IntegerLet(
          *($2), 
          /* xxx - round() or trunc()? */
-         new FloatExpression(static_cast<int>(std::round($4->value())), true));
+         new IntegerExpression(static_cast<int>(std::round($4->value()))));
       delete $2; // new()-ed in basic.l
    }
    | LET SVAR EQUAL stringExpr   {
@@ -206,6 +207,7 @@ program:
          *($3), 
          $6); }
    | IF integerExpr comp integerExpr THEN INT { 
+      /* xxx - IntegerIfThen() with just $2 and $4? */
       $$ = new FloatIfThen(
          new FloatExpression(static_cast<float>($2->value()), true), 
          new FloatExpression(static_cast<float>($4->value()), true), 
@@ -316,11 +318,124 @@ exprList:
 ;
 
 expr:
-   floatExpr
-   | integerExpr
+   integerExpr
+   | floatExpr
    | stringExpr
 ;
 	
+integerExpr:
+	addIntegerExpr
+;
+
+addIntegerExpr:
+	mulIntegerExpr
+
+	| mulIntegerExpr PLUS integerExpr { 
+      std::cout << "addIntegerExpr: mulIntegerExpr PLUS integerExpr ";
+      std::cout << $1->value() << " + " << $3->value() << std::endl;
+      $$ = new IntegerOperatorExpression($1, $3, '+'); }
+
+   /*
+	| integerExpr PLUS mulIntegerExpr { 
+      std::cout << "addIntegerExpr: integerExpr PLUS mulIntegerExpr ";
+      std::cout << $1->value() << " + " << $3->value() << std::endl;
+      $$ = new FloatOperatorExpression(
+         new FloatExpression(static_cast<float>($1->value()), true), 
+         new FloatExpression(static_cast<float>($3->value()), true), 
+         '+'); }
+
+	| integerExpr MINUS mulIntegerExpr { 
+      std::cout << "addIntegerExpr: integerExpr MINUS mulIntegerExpr ";
+      std::cout << $1->value() << " - " << $3->value() << std::endl;
+      $$ = new FloatOperatorExpression(
+         new FloatExpression(static_cast<float>($1->value()), true), 
+         new FloatExpression(static_cast<float>($3->value()), true), 
+         '-'); }
+
+	| mulIntegerExpr MINUS integerExpr { 
+      std::cout << "addIntegerExpr: mulIntegerExpr MINUS integerExpr ";
+      std::cout << $1->value() << " - " << $3->value() << std::endl;
+      $$ = new FloatOperatorExpression(
+         new FloatExpression(static_cast<float>($1->value()), true), 
+         new FloatExpression(static_cast<float>($3->value()), true), 
+         '-'); }
+
+	| mulIntegerExpr PLUS floatExpr { 
+      std::cout << "addIntegerExpr: mulIntegerExpr PLUS floatExpr ";
+      std::cout << $1->value() << " + " << $3->value() << std::endl;
+      $$ = new FloatOperatorExpression(
+         new FloatExpression(static_cast<float>($1->value()), true), 
+         $3, 
+         '+');
+   }
+
+	| mulIntegerExpr MINUS floatExpr { 
+      std::cout << "addIntegerExpr: mulIntegerExpr MINUS floatExpr ";
+      std::cout << $1->value() << " - " << $3->value() << std::endl;
+      $$ = new FloatOperatorExpression(
+         new FloatExpression(static_cast<float>($1->value()), true), 
+         $3, 
+         '-');
+   }
+   */
+;
+
+mulIntegerExpr:
+   expIntegerExpr {
+      std::cout << "mulIntegerExpr: expIntegerExpr " << std::endl; }
+
+	| integerExpr MULT integerExpr { 
+      std::cout << "mulIntegerExpr: integerExpr MULT integerExpr ";
+      std::cout << $1->value() << " * " << $3->value() << std::endl;
+      $$ = new IntegerOperatorExpression($1, $3, '*'); }
+
+	| expIntegerExpr MULT integerExpr { 
+      std::cout << "mulIntegerExpr: expIntegerExpr MULT integerExpr ";
+      std::cout << $1->value() << " * " << $3->value() << std::endl;
+      $$ = new IntegerOperatorExpression($1, $3, '*'); }
+
+   | integerExpr DIV expIntegerExpr { 
+      std::cout << "mulIntegerExpr: integerExpr DIV expIntegerExpr ";
+      std::cout << $1->value() << " / " << $3->value() << std::endl;
+      $$ = new IntegerOperatorExpression($1, $3, '/'); }
+
+   | expIntegerExpr DIV integerExpr { 
+      std::cout << "mulIntegerExpr: expIntegerExpr DIV integerExpr ";
+      std::cout << $1->value() << " / " << $3->value() << std::endl;
+      $$ = new IntegerOperatorExpression($1, $3, '/'); }
+
+   | MINUS expIntegerExpr { 
+      std::cout << "mulIntegerExpr: MINUS expIntegerExpr ";
+      std::cout << " - " << $2->value() << std::endl;
+      $$ = new IntegerOperatorExpression($2, 'n'); }
+;
+
+expIntegerExpr:
+   integerTerm {
+      std::cout << "expIntegerExpr: integerTerm ";
+      std::cout << $1->value() << std::endl;
+   }
+
+	| integerTerm EXP integerTerm { 
+      std::cout << "expIntegerExpr: integerTerm EXP integerExpr ";
+      std::cout << $1->value() << " ^ " << $3->value() << std::endl;
+      $$ = new IntegerOperatorExpression($1, $3, '^'); }
+;
+
+integerTerm:
+	INT { 
+      std::cout << "integerTerm: INT ";
+      std::cout << $1 << std::endl;
+      $$ = new IntegerExpression($1); }
+	| IVAR {
+      std::cout << "integerTerm: IVAR " << std::endl;
+      $$ = new IntegerVariableExpression(*($1));
+      delete $1; }
+   | OPENPAREN addIntegerExpr CLOSEPAREN { 
+      std::cout << "integerTerm: OPENPAREN addIntegerExpr CLOSEPAREN " << std::endl;
+      $$ = new IntegerParenExpression($2); }
+;
+
 floatExpr:
 	addFloatExpr
 ;
@@ -380,82 +495,6 @@ floatTerm:
       delete $1; }
 	| OPENPAREN addFloatExpr CLOSEPAREN	{ 
       $$ = new FloatParenExpression($2); }
-;
-
-integerExpr:
-	addIntegerExpr
-;
-
-addIntegerExpr:
-	mulIntegerExpr
-
-	| integerExpr PLUS mulIntegerExpr { 
-      $$ = new FloatOperatorExpression(
-         new FloatExpression(static_cast<float>($1->value()), true), 
-         new FloatExpression(static_cast<float>($3->value()), true), 
-         '+'); }
-
-	| integerExpr MINUS mulIntegerExpr { 
-      $$ = new FloatOperatorExpression(
-         new FloatExpression(static_cast<float>($1->value()), true), 
-         new FloatExpression(static_cast<float>($3->value()), true), 
-         '-'); }
-
-	| mulIntegerExpr PLUS integerExpr { 
-      $$ = new FloatOperatorExpression(
-         new FloatExpression(static_cast<float>($1->value()), true), 
-         new FloatExpression(static_cast<float>($3->value()), true), 
-         '+'); }
-
-	| mulIntegerExpr PLUS floatExpr { 
-      $$ = new FloatOperatorExpression(
-         new FloatExpression(static_cast<float>($1->value()), true), 
-         $3, 
-         '+');
-   }
-
-	| mulIntegerExpr MINUS integerExpr {
-      $$ = new FloatOperatorExpression(
-         new FloatExpression(static_cast<float>($1->value()), true), 
-         new FloatExpression(static_cast<float>($3->value()), true), 
-         '-'); }
-;
-
-mulIntegerExpr:
-	expIntegerExpr
-	| expIntegerExpr MULT expIntegerExpr { 
-      $$ = new FloatOperatorExpression(
-         new FloatExpression(static_cast<float>($1->value()), true), 
-         new FloatExpression(static_cast<float>($3->value()), true),
-         '*'); }
-   | expIntegerExpr DIV expIntegerExpr { 
-      $$ = new FloatOperatorExpression(
-         new FloatExpression(static_cast<float>($1->value()), true), 
-         new FloatExpression(static_cast<float>($3->value()), true),
-         '/'); }
-   | MINUS expIntegerExpr { 
-      $$ = new FloatOperatorExpression(
-         new FloatExpression(static_cast<float>($2->value()), true), 
-         'n'); }
-;
-
-expIntegerExpr:
-	integerTerm
-	| integerTerm EXP integerTerm { 
-      $$ = new FloatOperatorExpression(
-         new FloatExpression(static_cast<float>($1->value()), true), 
-         new FloatExpression(static_cast<float>($3->value()), true), 
-            '^'); }
-;
-
-integerTerm:
-	INT { 
-      $$ = new FloatExpression(static_cast<float>($1), true); }
-	| IVAR {
-      $$ = new IntegerVariableExpression(*($1));
-      delete $1; }
-   | OPENPAREN addIntegerExpr CLOSEPAREN { 
-      $$ = new FloatParenExpression(new FloatExpression(static_cast<float>($2->value()), true)); }
 ;
 
 stringExpr:

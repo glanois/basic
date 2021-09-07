@@ -138,9 +138,32 @@ std::string IntegerOperatorExpression::list() const{
    return result;
 }
 
-int IntegerOperatorExpression::value() const
+
+
+// https://stackoverflow.com/questions/101439/the-most-efficient-way-to-implement-an-integer-based-power-function-powint-int
+IntValue ipow(IntValue base, IntValue exp)
 {
-   int result = 0.0;
+   IntValue result = 0;
+
+   if (exp >= 0)
+   {
+      result = 1;
+      for (;;)
+      {
+         if (exp & 1)
+            result *= base;
+         exp >>= 1;
+         if (!exp)
+            break;
+         base *= base;
+      }
+   }
+   return result;
+}
+
+IntValue IntegerOperatorExpression::value() const
+{
+   IntValue result = 0;
 	switch (op_)
    {
 		case '+':
@@ -156,14 +179,14 @@ int IntegerOperatorExpression::value() const
          result = a_->value() / b_->value();
          break; 
 		case '^':
-			result = pow(a_->value(), b_->value());
+			result = ipow(a_->value(), b_->value());
          break;
 		case 'n':
          // Unary minus.
 			result = -a_->value();
          break;
    default:
-      printf("ERROR: operation '%c' not supported.\n", op_);
+      std::cout << "IntegerOperatorExpression::value() - ERROR: operation " << op_ << " not supported." << std::endl;
 	}
    return result;
 }

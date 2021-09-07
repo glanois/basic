@@ -30,7 +30,7 @@ float FloatVariableExpression::value() const
 
 
 IntegerVariableExpression::IntegerVariableExpression(const std::string& name) 
-   : FloatExpression(0.0)
+   : IntegerExpression(0)
    , name_(name)
 {
 }
@@ -38,7 +38,7 @@ IntegerVariableExpression::IntegerVariableExpression(const std::string& name)
 // return the stored value
 std::string IntegerVariableExpression::print() const
 {
-   int v = value();
+   IntValue v = value();
 	return std::to_string(v);
 }
 
@@ -49,10 +49,9 @@ std::string IntegerVariableExpression:: list() const
 }
 
 // numerical evaluation
-float IntegerVariableExpression::value() const
+IntValue IntegerVariableExpression::value() const
 {
-   int v = Basic::instance()->resolveInteger(name_);
-	return static_cast<float>(v);
+   return Basic::instance()->resolveInteger(name_);
 }
 
 

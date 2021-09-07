@@ -36,7 +36,7 @@ public:
 	
 	std::string print() const;		// return the stored value
 	std::string list() const;			// printable version
-	int value() const;					// value of performed operation
+	IntValue value() const;					// value of performed operation
 
 private:
 	IntegerExpression* a_;

@@ -27,7 +27,7 @@ private:
 
 class IntegerLet : public Program {
 public:
-	IntegerLet(const std::string& var, const FloatExpression* expression);	// create a new LET assignment */
+	IntegerLet(const std::string& var, const IntegerExpression* expression);	// create a new LET assignment */
 	~IntegerLet();												// clean up
 
 	bool execute(int lineNumber, bool next) const;				// run this line of the program
@@ -35,7 +35,7 @@ public:
 	
 private:
 	std::string var_;
-	const FloatExpression* expression_;
+	const IntegerExpression* expression_;
 };
 
 class StringLet : public Program {

@@ -49,7 +49,7 @@ std::string IntegerParenExpression::list() const{
 }
 
 // numerical evaluation
-int IntegerParenExpression::value() const{
+IntValue IntegerParenExpression::value() const{
 	return exp_->value();
 }
 
